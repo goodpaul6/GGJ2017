@@ -11,16 +11,29 @@ var player = {
 	y : 100,
 	dx : 0,
 	dy : 0,
-	width : 32,
-	height : 48,
+	width : PLAYER_FRAME_WIDTH,
+	height : PLAYER_FRAME_HEIGHT,
 	grounded : false,
-	doubleJumped : false
+	doubleJumped : false,
+	frameIndex : 0,
+	anim : PLAYER_ANIM_STAND,
+	animTimer : 0,
+	animFrameTime : 1 / 12,
+	flipped : false
+};
+
+var echo = {
+	active : false,
+	timer : 0,
+	radius : 0,
+	x : 0,
+	y : 0
 };
 
 var camera = {
 	x : 0,
 	y : 0
-}
+};
 
 var level = TileMaps["level"];
 
@@ -69,7 +82,6 @@ function move(ent, x, y, collideX, collideY) {
 		ent.x += x;
 		ent.y += y;
 	}
-
 }
 
 function init() {
@@ -86,6 +98,8 @@ function init() {
 	
 	ctx = canvas.getContext("2d");
 
+	pixelated(ctx);
+
 	document.addEventListener("keydown", function(e) {
 		keysDown[e.keyCode] = true;
 		keysJustPressed[e.keyCode] = true;
@@ -95,14 +109,42 @@ function init() {
 		delete keysDown[e.keyCode];
 		delete keysJustPressed[e.keyCode];
 	});
+
+	for(var i = 0; i < level.layers.length; ++i) {
+		var layer = level.layers[i];
+
+		if(layer.name == "Entities") {
+			for(var i = 0; i < layer.objects.length; ++i) {
+				var object = layer.objects[i];
+
+				if(object.type == "player") {
+					player.x = object.x;
+					player.y = object.y;
+				} else if(object.type == "enemy") {
+					createEnemy(object.x, object.y);
+				}
+			}
+		}
+	}
 }
 
+const ECHO_TIME = 1;
+const ECHO_SPEED = 400;
 const CAMERA_SPEED_FACTOR = 5;
 
-function update(dt) {
-	camera.x += (player.x - canvas.width / 2 - camera.x) * dt * CAMERA_SPEED_FACTOR;
-	camera.y += (player.y - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
+function updateEcho(dt) {
+	if(echo.active) {
+		echo.timer -= dt;
+		if(echo.timer <= 0) {
+			echo.active = false;
+			echo.radius = 0;
+		}
 
+		echo.radius += ECHO_SPEED * dt;
+	}
+}
+
+function updatePlayer(dt) {
 	if(collideLevel(player.x, player.y + 1, player.width, player.height)) {
 		player.grounded = true;
 		player.doubleJumped = false;
@@ -112,6 +154,7 @@ function update(dt) {
 		player.dy += 16 * dt;
 	}
 	
+	var doEcho = 32 in keysDown;
 	var left = (37 in keysDown) || (65 in keysDown);
 	var right = (39 in keysDown) || (68 in keysDown);
 	var jump = (38 in keysJustPressed) || (87 in keysJustPressed);
@@ -127,16 +170,32 @@ function update(dt) {
 		}
 	}
 
+	if(doEcho && !echo.active) {
+		echo.active = true;
+		echo.timer = ECHO_TIME;
+		echo.x = player.x + player.width / 2;
+		echo.y = player.y + player.height / 2;
+	}
+
 	if (down) {
 		player.dy += 50 * dt;
 	}
 	
 	if(left) { 
+		player.flipped = true;
+		player.anim = PLAYER_ANIM_RUN;
 		player.dx = -300 * dt;
 	} else if(right) {
+		player.flipped = false;
+		player.anim = PLAYER_ANIM_RUN;
 		player.dx = 300 * dt;
 	} else {
 		player.dx = 0;
+		player.anim = PLAYER_ANIM_STAND;
+	}
+
+	if(!player.grounded) {
+		player.anim = PLAYER_ANIM_JUMP;
 	}
 
 	move(player, player.dx, player.dy, function() { 
@@ -144,6 +203,45 @@ function update(dt) {
 	}, function() {
 		player.dy = 0;
 	});
+
+	if(player.anim) {
+		player.frameIndex = Math.floor(player.animTimer / player.animFrameTime);
+		if(player.frameIndex >= player.anim.length) {
+			player.frameIndex = 0;
+			player.animTimer = 0;
+		}
+
+		player.animTimer += dt;
+	}
+}
+
+function update(dt) {
+	camera.x += (player.x - canvas.width / 2 - camera.x) * dt * CAMERA_SPEED_FACTOR;
+	camera.y += (player.y - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
+
+	updateEnemies(dt);
+	updatePlayer(dt);
+	updateEcho(dt);
+}
+
+function drawFrame(image, x, y, frame, fw, fh, flip) {
+	var columns = image.width / fw;
+	
+	var u = frame % columns;
+	var v = Math.floor(frame / columns);
+
+	if(!flip) {
+		ctx.drawImage(image, u * fw, v * fh, fw, fh, x, y, fw, fh);
+	} else {
+		ctx.save();
+		
+		ctx.translate(x + fw, y);
+		ctx.scale(-1, 1);
+
+		ctx.drawImage(image, u * fw, v * fh, fw, fh, 0, 0, fw, fh);
+
+		ctx.restore();
+	}
 }
 
 function draw() {
@@ -155,18 +253,36 @@ function draw() {
 
 	var layer = level.layers[0];
 
-	ctx.fillStyle = "blue";
-	for(var y = 0; y < layer.height; ++y) {
-		for(var x = 0; x < layer.width; ++x) {
-			var tile = layer.data[x + y * layer.width];
-			if(tile > 0) {
-				ctx.fillRect(x * level.tilewidth - camera.x, y * level.tileheight - camera.y, level.tilewidth, level.tileheight);	
+	if(groundReady) {
+		for(var y = 0; y < layer.height; ++y) {
+			for(var x = 0; x < layer.width; ++x) {
+				var tile = layer.data[x + y * layer.width];
+				if(tile > 0) {
+					tile -= 1;
+					drawFrame(ground, x * level.tilewidth - camera.x, y * level.tileheight - camera.y, tile, level.tilewidth, level.tileheight, false);
+				}
 			}
 		}
 	}
 
-	ctx.fillStyle = "red";
-	ctx.fillRect(player.x - camera.x, player.y - camera.y, player.width, player.height);
+	if(playerReady) {
+		drawFrame(playerImage, player.x - camera.x, player.y - camera.y, player.anim[player.frameIndex], PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT, player.flipped);
+	}
+
+	if(echo.active) {
+		ctx.beginPath();
+		ctx.strokeStyle = "white";
+		ctx.arc(echo.x - camera.x, echo.y - camera.y, echo.radius, 0, Math.PI * 2);
+		ctx.closePath();
+
+		var prevAlpha = ctx.globalAlpha;
+
+		ctx.globalAlpha = echo.timer / ECHO_TIME;
+		ctx.stroke();
+		ctx.globalAlpha = prevAlpha;
+	}
+
+	drawEnemies();
 }
 
 var then = Date.now();

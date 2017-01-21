@@ -14,8 +14,8 @@ function safeHeight() {
 	return Math.min(inner, client, body) - 5;
 }
 
-function pixelated(context, drawPixels) {
-	var smooth = !drawPixels;
+function pixelated(context) {
+	var smooth = false;
 	context.mozImageSmoothingEnabled = smooth;
 	context.webkitImageSmoothingEnabled = smooth;
 	context.msImageSmoothingEnabled = smooth;
