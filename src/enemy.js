@@ -18,6 +18,7 @@ const ENEMY_STATE_SEEN_PLAYER = 1;
 function createEnemy(type, x, y) {
     enemies.push({
         type : type,
+        freq : ECHO_RED_FREQ,
         x : x,
         y : y,
         tangibleTime : 0,

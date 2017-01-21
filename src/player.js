@@ -62,7 +62,8 @@ function updatePlayer(dt) {
 	var jump = (38 in keysJustPressed) || (87 in keysJustPressed);
 	var up = (38 in keysDown) || (87 in keysDown);
     var down = (40 in keysDown) || (83 in keysDown);
-	
+	var shoot = (88 in keysDown) || (78 in keysDown);
+
 	if (jump) {
 		if(player.grounded) {
 			player.dy = -10;
@@ -125,6 +126,10 @@ function updatePlayer(dt) {
 
 	if(!player.grounded) {
 		player.anim = PLAYER_ANIM_JUMP;
+	}
+	
+	if(shoot) {
+		shootWave(WAVE_SHOT_RED, player.x, player.y, player.flipped ? -1 : 1);
 	}
 
 	move(player, player.dx, player.dy, function() { 

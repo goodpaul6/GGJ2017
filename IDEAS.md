@@ -14,5 +14,7 @@
         - batteries for the gun spawn when enemies die and around the level
         - gun overheats if you hold spacebar for too long
         - color on the gun changes to reflect the frequency
+        - shoot enemies with correct color
+        - match frequency with almost dead enemies
 
     - Magnet gun puzzles

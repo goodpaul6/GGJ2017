@@ -143,6 +143,7 @@ function update(dt) {
 	updateRockets(dt);
 	updatePlayer(dt);
 	updateEcho(dt);
+	updateWaves(dt);
 }
 
 function drawFrame(image, x, y, frame, fw, fh, flip) {
@@ -230,6 +231,7 @@ function draw() {
 		ctx.globalAlpha = prevAlpha;
 	}
 
+	drawWaves();
 	drawEnemies();
 	drawRockets();
 }
