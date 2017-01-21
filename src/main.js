@@ -1,3 +1,5 @@
+"use strict";
+
 var canvas = null;
 var ctx = null;
 
@@ -14,6 +16,8 @@ var player = {
 	grounded : false,
 	doubleJumped : false
 };
+
+var level = TileMaps["level"]["layers"][0];
 
 function init() {
 	canvas = document.createElement("canvas");
@@ -89,7 +93,17 @@ function update(dt) {
 function draw() {
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	
+
+	ctx.fillStyle = "blue";
+	for(var y = 0; y < level.height; ++y) {
+		for(var x = 0; x < level.width; ++x) {
+			var tile = level.data[x + y * level.width];
+			if(tile > 0) {
+				ctx.fillRect(x * 32, y * 32, 32, 32);	
+			}
+		}
+	}
+
 	ctx.fillStyle = "red";
 	ctx.fillRect(player.x, player.y, player.width, player.height);
 }
