@@ -31,16 +31,10 @@ function drawEnemies() {
         var enemy = enemies[i];
 
         if(enemy.echoTime > 0) {
-            ctx.beginPath();
-            ctx.arc(enemy.x - camera.x, enemy.y - camera.y, ENEMY_RADIUS, 0, Math.PI * 2);
-            ctx.closePath();
-
             var prevAlpha = ctx.globalAlpha;
 
             ctx.globalAlpha = enemy.echoTime / ENEMY_VISIBLE_TIME;
-
-            ctx.strokeStyle = "red";
-            ctx.stroke();
+            ctx.drawImage(enemyImage, enemy.x - camera.x, enemy.y - camera.y);
 
             ctx.globalAlpha = prevAlpha;
         }

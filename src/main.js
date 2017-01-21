@@ -104,7 +104,7 @@ function init() {
 		if(!(e.keyCode in keysDown)) {
 			keysJustPressed[e.keyCode] = true;
 		}
-		
+
 		keysDown[e.keyCode] = true;
 	});
 	
@@ -220,8 +220,8 @@ function updatePlayer(dt) {
 }
 
 function update(dt) {
-	camera.x += (player.x - canvas.width / 2 - camera.x) * dt * CAMERA_SPEED_FACTOR;
-	camera.y += (player.y - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
+	camera.x += (player.x + player.width / 2 - canvas.width / 2 - camera.x) * dt * CAMERA_SPEED_FACTOR;
+	camera.y += (player.y + player.height / 2 - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
 
 	updateEnemies(dt);
 	updatePlayer(dt);

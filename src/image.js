@@ -7,6 +7,15 @@ ground.onload = function() {
 
 ground.src = "graphics/ground.png";
 
+var enemyReady = false;
+var enemyImage = new Image();
+
+enemyImage.onload = function() {
+    enemyReady = true;
+}
+
+enemyImage.src = "graphics/enemy.png";
+
 var playerReady = false;
 var playerImage = new Image();
 
