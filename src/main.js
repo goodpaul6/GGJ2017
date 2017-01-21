@@ -101,8 +101,11 @@ function init() {
 	pixelated(ctx);
 
 	document.addEventListener("keydown", function(e) {
+		if(!(e.keyCode in keysDown)) {
+			keysJustPressed[e.keyCode] = true;
+		}
+		
 		keysDown[e.keyCode] = true;
-		keysJustPressed[e.keyCode] = true;
 	});
 	
 	document.addEventListener("keyup", function(e) {
@@ -121,7 +124,7 @@ function init() {
 					player.x = object.x;
 					player.y = object.y;
 				} else if(object.type == "enemy") {
-					createEnemy(object.x, object.y);
+					createEnemy(object.x + level.tilewidth / 2, object.y + level.tileheight / 2);
 				}
 			}
 		}
@@ -175,6 +178,7 @@ function updatePlayer(dt) {
 		echo.timer = ECHO_TIME;
 		echo.x = player.x + player.width / 2;
 		echo.y = player.y + player.height / 2;
+		dingSound.play();
 	}
 
 	if (down) {

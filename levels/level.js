@@ -72,6 +72,18 @@
                  "width":32,
                  "x":192,
                  "y":352
+                }, 
+                {
+                 "ellipse":true,
+                 "height":32,
+                 "id":7,
+                 "name":"Bat",
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":32,
+                 "x":320,
+                 "y":416
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -80,7 +92,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":7,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,

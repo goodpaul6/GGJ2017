@@ -1,6 +1,6 @@
 var enemies = [];
 
-const ENEMY_VISIBLE_TIME = 2;
+const ENEMY_VISIBLE_TIME = 1;
 const ENEMY_RADIUS = 20;
 
 function createEnemy(x, y) {
@@ -17,8 +17,10 @@ function updateEnemies(dt) {
 
         var dist2 = (echo.x - enemy.x) * (echo.x - enemy.x) + (echo.y - enemy.y) * (echo.y - enemy.y);
 
-        if(dist2 < echo.radius * echo.radius) {
-            enemy.echoTime = ENEMY_VISIBLE_TIME;
+        if(enemy.echoTime <= 0) {
+            if(dist2 < echo.radius * echo.radius) {
+                enemy.echoTime = ENEMY_VISIBLE_TIME;
+            }
         }
         enemy.echoTime -= dt;
     }   
