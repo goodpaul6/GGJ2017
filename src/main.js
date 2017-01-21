@@ -13,6 +13,9 @@ var player = {
 	grounded : false
 };
 
+var levelReady = false;
+var level = null;
+
 function init() {
 	canvas = document.createElement("canvas");
 	document.body.appendChild(canvas);
@@ -33,6 +36,10 @@ function init() {
 	
 	document.addEventListener("keyup", function(e) {
 		delete keysDown[e.keyCode];
+	});
+
+	loadLevel("level1", function(o) {
+		
 	});
 }
 
