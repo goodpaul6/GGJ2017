@@ -7,8 +7,8 @@ var keysDown = {};
 var keysJustPressed = {};
 
 var player = {
-	x : 0,
-	y : 0,
+	x : 100,
+	y : 100,
 	dx : 0,
 	dy : 0,
 	width : 32,
@@ -17,7 +17,55 @@ var player = {
 	doubleJumped : false
 };
 
-var level = TileMaps["level"]["layers"][0];
+var level = TileMaps["level"];
+
+function collideLevel(x, y, w, h) {
+	var left = Math.floor(x / level.tilewidth);
+	var top = Math.floor(y / level.tileheight);
+	var right = Math.ceil((x + w) / level.tilewidth);
+	var bottom = Math.ceil((y + h) / level.tileheight);
+
+	for(var y = top; y < bottom; ++y) {
+		for(var x = left; x < right; ++x) {
+			if(level.layers[0].data[x + y * level.width] > 0) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+function move(ent, x, y, collideX, collideY) {
+	if(collideLevel(ent.x + x, ent.y + y, ent.width, ent.height)) {
+		const SAMPLES = 5;
+
+		var moveX = x / SAMPLES;
+		var moveY = y / SAMPLES;
+
+		for(var i = 0; i < SAMPLES; ++i) {
+			if(!collideLevel(ent.x + moveX, ent.y, ent.width, ent.height)) {
+				ent.x += moveX;
+			} else {
+				collideX();
+				break;
+			}
+		}
+		
+		for(var i = 0; i < SAMPLES; ++i) {
+			if(!collideLevel(ent.x, ent.y + moveY, ent.width, ent.height)) {
+				ent.y += moveY;
+			} else {
+				collideY();
+				break;
+			}
+		}
+	} else {
+		ent.x += x;
+		ent.y += y;
+	}
+
+}
 
 function init() {
 	canvas = document.createElement("canvas");
@@ -45,6 +93,14 @@ function init() {
 }
 
 function update(dt) {
+	if(collideLevel(player.x, player.y + 1, player.width, player.height)) {
+		player.grounded = true;
+		player.doubleJumped = false;
+		player.dy = 0;
+	} else {
+		player.grounded = false;	
+	}
+ 
 	if(player.y + player.height < canvas.height) {
 		player.dy += 15 * dt;
 	} else {
@@ -81,25 +137,25 @@ function update(dt) {
 		player.dx = 0;
 	}
 
-	if(player.y < 0) {
-		player.y = 0;
+	move(player, player.dx, player.dy, function() { 
+		player.dx = 0; 
+	}, function() {
 		player.dy = 0;
-	}
-	
-	player.x += player.dx;
-	player.y += player.dy;
+	});
 }
 
 function draw() {
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+	var layer = level.layers[0];
+
 	ctx.fillStyle = "blue";
-	for(var y = 0; y < level.height; ++y) {
-		for(var x = 0; x < level.width; ++x) {
-			var tile = level.data[x + y * level.width];
+	for(var y = 0; y < layer.height; ++y) {
+		for(var x = 0; x < layer.width; ++x) {
+			var tile = layer.data[x + y * layer.width];
 			if(tile > 0) {
-				ctx.fillRect(x * 32, y * 32, 32, 32);	
+				ctx.fillRect(x * level.tilewidth, y * level.tileheight, level.tilewidth, level.tileheight);	
 			}
 		}
 	}
