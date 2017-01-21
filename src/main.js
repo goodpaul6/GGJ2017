@@ -2,6 +2,7 @@ var canvas = null;
 var ctx = null;
 
 var keysDown = {};
+var keysJustPressed = {};
 
 var player = {
 	x : 0,
@@ -10,7 +11,8 @@ var player = {
 	dy : 0,
 	width : 32,
 	height : 64,
-	grounded : false
+	grounded : false,
+	doubleJumped : false
 };
 
 function init() {
@@ -29,30 +31,42 @@ function init() {
 
 	document.addEventListener("keydown", function(e) {
 		keysDown[e.keyCode] = true;
+		keysJustPressed[e.keyCode] = true;
 	});
 	
 	document.addEventListener("keyup", function(e) {
 		delete keysDown[e.keyCode];
+		delete keysJustPressed[e.keyCode];
 	});
 }
 
 function update(dt) {
 	if(player.y + player.height < canvas.height) {
-		player.dy += 10 * dt;
+		player.dy += 15 * dt;
 	} else {
 		player.y = canvas.height - player.height;
 		player.dy = 0;
+		player.doubleJumped = false;
 		player.grounded = true;
 	}
 	
 	var left = (37 in keysDown) || (65 in keysDown);
 	var right = (39 in keysDown) || (68 in keysDown);
-	var up = (38 in keysDown) || (87 in keysDown);
+	var jump = (38 in keysJustPressed) || (87 in keysJustPressed);
 	var down = (40 in keysDown) || (83 in keysDown);
 	
-	if(player.grounded && up) {
-		player.dy = -10;
-		player.grounded = false;
+	if (jump) {
+		if(player.grounded) {
+			player.dy = -10;
+			player.grounded = false;
+		} else if(!player.doubleJumped) {
+			player.dy = -10;
+			player.doubleJumped = true;
+		}
+	}
+
+	if (down) {
+		player.dy += 50 * dt;
 	}
 	
 	if(left) { 
@@ -61,6 +75,11 @@ function update(dt) {
 		player.dx = 300 * dt;
 	} else {
 		player.dx = 0;
+	}
+
+	if(player.y < 0) {
+		player.y = 0;
+		player.dy = 0;
 	}
 	
 	player.x += player.dx;
@@ -84,6 +103,8 @@ function loop() {
 	update(delta / 1000);
 	draw();
 	
+	keysJustPressed = {};
+
 	then = now;
 	
 	requestAnimationFrame(loop);
