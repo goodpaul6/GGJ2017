@@ -16,6 +16,15 @@ enemyImage.onload = function() {
 
 enemyImage.src = "graphics/enemy.png";
 
+var rocketReady = false;
+var rocketImage = new Image();
+
+rocketImage.onload = function() {
+    rocketReady = true;
+}
+
+rocketImage.src = "graphics/rocket.png";
+
 var playerReady = false;
 var playerImage = new Image();
 

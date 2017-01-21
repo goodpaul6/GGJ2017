@@ -18,6 +18,7 @@ var player = {
 };
 
 function move(ent, x, y, collideX, collideY) {
+
 	if(collideLevel(ent.x + x, ent.y + y, ent.width, ent.height)) {
 		const SAMPLES = 5;
 
@@ -28,7 +29,9 @@ function move(ent, x, y, collideX, collideY) {
 			if(!collideLevel(ent.x + moveX, ent.y, ent.width, ent.height)) {
 				ent.x += moveX;
 			} else {
-				collideX();
+				if(collideX) {
+					collideX();
+				}
 				break;
 			}
 		}
@@ -37,7 +40,9 @@ function move(ent, x, y, collideX, collideY) {
 			if(!collideLevel(ent.x, ent.y + moveY, ent.width, ent.height)) {
 				ent.y += moveY;
 			} else {
-				collideY();
+				if(collideY) {
+					collideY();
+				}
 				break;
 			}
 		}
