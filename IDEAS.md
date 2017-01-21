@@ -13,5 +13,6 @@
         - health and stuff spawns around the level
         - batteries for the gun spawn when enemies die and around the level
         - gun overheats if you hold spacebar for too long
+        - color on the gun changes to reflect the frequency
 
     - Magnet gun puzzles

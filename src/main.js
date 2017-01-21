@@ -33,6 +33,18 @@ function collideLevel(x, y, w, h) {
 	var right = Math.ceil((x + w) / level.tilewidth);
 	var bottom = Math.ceil((y + h) / level.tileheight);
 
+	if(right < left) {
+		var tmp = left;
+		left = right;
+		right = tmp;
+	}
+
+	if(bottom < top) {
+		var tmp = top;
+		top = bottom;
+		bottom = tmp;
+	}
+
 	for(var y = top; y < bottom; ++y) {
 		for(var x = left; x < right; ++x) {
 			if(level.layers[0].data[x + y * level.width] > 0) {
@@ -153,6 +165,9 @@ function drawFrame(image, x, y, frame, fw, fh, flip) {
 	}
 }
 
+const ECHO_DISP_WIDTH = 24;
+const ECHO_DISP_HEIGHT = 16;
+
 function draw() {
 	camera.x = Math.floor(camera.x);
 	camera.y = Math.floor(camera.y);
@@ -178,6 +193,21 @@ function draw() {
 		drawFrame(playerImage, player.x - camera.x, player.y - camera.y, player.anim[player.frameIndex], PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT, player.flipped);
 	}
 
+	if(player.echoTime > 0) {
+		if(echo.freq == ECHO_NORMAL_FREQ) {
+			ctx.fillStyle = "white";
+		} else if(echo.freq == ECHO_RED_FREQ) {
+			ctx.fillStyle = "red";
+		} else if(echo.freq == ECHO_BLUE_FREQ) {
+			ctx.fillStyle = "blue";
+		} else if(echo.freq == ECHO_YELLOW_FREQ) {
+			ctx.fillStyle = "yellow";
+		}
+
+		ctx.fillRect(player.x + player.width / 2 - ECHO_DISP_WIDTH / 2 - camera.x, player.y + player.height / 2 - ECHO_DISP_HEIGHT / 2 - camera.y, 
+			ECHO_DISP_WIDTH, ECHO_DISP_HEIGHT);
+	}
+
 	if(echo.active) {
 		if(echo.freq === ECHO_NORMAL_FREQ) {
 			ctx.strokeStyle = "white";
@@ -188,6 +218,7 @@ function draw() {
 		} else if(echo.freq === ECHO_YELLOW_FREQ) {
 			ctx.strokeStyle = "yellow";
 		}
+
 		ctx.beginPath();
 		ctx.arc(echo.x - camera.x, echo.y - camera.y, echo.radius, 0, Math.PI * 2);
 		ctx.closePath();

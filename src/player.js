@@ -18,37 +18,31 @@ var player = {
 };
 
 function move(ent, x, y, collideX, collideY) {
+	const SAMPLES = 5;
 
-	if(collideLevel(ent.x + x, ent.y + y, ent.width, ent.height)) {
-		const SAMPLES = 5;
+	var moveX = x / SAMPLES;
+	var moveY = y / SAMPLES;
 
-		var moveX = x / SAMPLES;
-		var moveY = y / SAMPLES;
-
-		for(var i = 0; i < SAMPLES; ++i) {
-			if(!collideLevel(ent.x + moveX, ent.y, ent.width, ent.height)) {
-				ent.x += moveX;
-			} else {
-				if(collideX) {
-					collideX();
-				}
-				break;
+	for(var i = 0; i < SAMPLES; ++i) {
+		if(!collideLevel(ent.x + moveX, ent.y, ent.width, ent.height)) {
+			ent.x += moveX;
+		} else {
+			if(collideX) {
+				collideX();
 			}
+			break;
 		}
-		
-		for(var i = 0; i < SAMPLES; ++i) {
-			if(!collideLevel(ent.x, ent.y + moveY, ent.width, ent.height)) {
-				ent.y += moveY;
-			} else {
-				if(collideY) {
-					collideY();
-				}
-				break;
+	}
+	
+	for(var i = 0; i < SAMPLES; ++i) {
+		if(!collideLevel(ent.x, ent.y + moveY, ent.width, ent.height)) {
+			ent.y += moveY;
+		} else {
+			if(collideY) {
+				collideY();
 			}
+			break;
 		}
-	} else {
-		ent.x += x;
-		ent.y += y;
 	}
 }
 
@@ -108,6 +102,12 @@ function updatePlayer(dt) {
 
 	if (down) {
 		player.dy += 50 * dt;
+		
+		if(collideEnemy(player.x, player.y + 1, player.width, player.height, function(e) {
+			e.hit = true;
+			player.jumped = false;
+			player.dy = -9;
+		}));
 	}
 	
 	if(left) { 
