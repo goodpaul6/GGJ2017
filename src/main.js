@@ -12,10 +12,15 @@ var player = {
 	dx : 0,
 	dy : 0,
 	width : 32,
-	height : 64,
+	height : 48,
 	grounded : false,
 	doubleJumped : false
 };
+
+var camera = {
+	x : 0,
+	y : 0
+}
 
 var level = TileMaps["level"];
 
@@ -92,22 +97,19 @@ function init() {
 	});
 }
 
+const CAMERA_SPEED_FACTOR = 5;
+
 function update(dt) {
+	camera.x += (player.x - canvas.width / 2 - camera.x) * dt * CAMERA_SPEED_FACTOR;
+	camera.y += (player.y - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
+
 	if(collideLevel(player.x, player.y + 1, player.width, player.height)) {
 		player.grounded = true;
 		player.doubleJumped = false;
 		player.dy = 0;
 	} else {
-		player.grounded = false;	
-	}
- 
-	if(player.y + player.height < canvas.height) {
-		player.dy += 15 * dt;
-	} else {
-		player.y = canvas.height - player.height;
-		player.dy = 0;
-		player.doubleJumped = false;
-		player.grounded = true;
+		player.grounded = false;
+		player.dy += 16 * dt;
 	}
 	
 	var left = (37 in keysDown) || (65 in keysDown);
@@ -145,6 +147,9 @@ function update(dt) {
 }
 
 function draw() {
+	camera.x = Math.floor(camera.x);
+	camera.y = Math.floor(camera.y);
+
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -155,13 +160,13 @@ function draw() {
 		for(var x = 0; x < layer.width; ++x) {
 			var tile = layer.data[x + y * layer.width];
 			if(tile > 0) {
-				ctx.fillRect(x * level.tilewidth, y * level.tileheight, level.tilewidth, level.tileheight);	
+				ctx.fillRect(x * level.tilewidth - camera.x, y * level.tileheight - camera.y, level.tilewidth, level.tileheight);	
 			}
 		}
 	}
 
 	ctx.fillStyle = "red";
-	ctx.fillRect(player.x, player.y, player.width, player.height);
+	ctx.fillRect(player.x - camera.x, player.y - camera.y, player.width, player.height);
 }
 
 var then = Date.now();
