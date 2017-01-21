@@ -38,6 +38,10 @@ function collideLevel(x, y, w, h) {
 	return false;
 }
 
+function collideLineLevel(x1, y1, x2, y2) {
+	return collideLevel(x1, y1, x2 - x1, y2 - y1);
+}
+
 function init() {
 	canvas = document.createElement("canvas");
 	document.body.appendChild(canvas);
@@ -78,7 +82,7 @@ function init() {
 					player.x = object.x;
 					player.y = object.y;
 				} else if(object.type == "enemy") {
-					createEnemy(object.x + level.tilewidth / 2, object.y + level.tileheight / 2);
+					createEnemy(ENEMY_TYPE_ROCKET, object.x + level.tilewidth / 2, object.y + level.tileheight / 2);
 				}
 			}
 		}
@@ -106,6 +110,7 @@ function update(dt) {
 	camera.y += (player.y + player.height / 2 - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
 
 	updateEnemies(dt);
+	updateRockets(dt);
 	updatePlayer(dt);
 	updateEcho(dt);
 }
@@ -169,6 +174,7 @@ function draw() {
 	}
 
 	drawEnemies();
+	drawRockets();
 }
 
 var then = Date.now();
