@@ -13,7 +13,8 @@ var player = {
 	animTimer : 0,
 	animFrameTime : 1 / 12,
 	flipped : false,
-    jumped : false
+    jumped : false,
+	echoTime: 0
 };
 
 function move(ent, x, y, collideX, collideY) {
@@ -78,11 +79,26 @@ function updatePlayer(dt) {
     }
 
 	if(doEcho && !echo.active) {
+		player.echoTime += dt;
+
+		if (player.echoTime <= 1) {
+			echo.freq = ECHO_NORMAL_FREQ;
+		} else if (player.echoTime <= 1.5) {
+			echo.freq = ECHO_RED_FREQ;
+		} else if (player.echoTime <= 2.25) {
+			echo.freq = ECHO_BLUE_FREQ;
+		} else { 
+			echo.freq = ECHO_YELLOW_FREQ;
+		}
+	}
+
+	if(player.echoTime > 0 && !doEcho && !echo.active) {
 		echo.active = true;
 		echo.timer = ECHO_TIME;
 		echo.x = player.x + player.width / 2;
 		echo.y = player.y + player.height / 2;
 		dingSound.play();
+		player.echoTime = 0;
 	}
 
 	if (down) {

@@ -6,8 +6,14 @@ var ctx = null;
 var keysDown = {};
 var keysJustPressed = {};
 
+const ECHO_NORMAL_FREQ = 0;
+const ECHO_RED_FREQ = 1;
+const ECHO_BLUE_FREQ = 2;
+const ECHO_YELLOW_FREQ = 3;
+
 var echo = {
 	active : false,
+	freq : 0,
 	timer : 0,
 	radius : 0,
 	x : 0,
@@ -101,6 +107,18 @@ function updateEcho(dt) {
 	}
 }
 
+/*function updateEcho(dt) {
+	if (echo.frequency === ECHO_NORMAL_FREQ){
+		echo.timer -= dt;
+		if(echo.timer <= 0) {
+			echo.active = false;
+			echo.radius = 0;
+		}
+
+		echo.radius += ECHO_SEED * dt;
+	}
+}*/
+
 function update(dt) {
 	camera.x += (player.x + player.width / 2 - canvas.width / 2 - camera.x) * dt * CAMERA_SPEED_FACTOR;
 	camera.y += (player.y + player.height / 2 - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
@@ -156,8 +174,16 @@ function draw() {
 	}
 
 	if(echo.active) {
+		if(echo.freq === ECHO_NORMAL_FREQ) {
+			ctx.strokeStyle = "white";
+		} else if (echo.freq === ECHO_RED_FREQ) {
+			ctx.strokeStyle = "red";
+		} else if(echo.freq === ECHO_BLUE_FREQ) {
+			ctx.strokeStyle = "blue";
+		} else if(echo.freq === ECHO_YELLOW_FREQ) {
+			ctx.strokeStyle = "yellow";
+		}
 		ctx.beginPath();
-		ctx.strokeStyle = "white";
 		ctx.arc(echo.x - camera.x, echo.y - camera.y, echo.radius, 0, Math.PI * 2);
 		ctx.closePath();
 
