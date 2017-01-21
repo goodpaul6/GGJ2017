@@ -15,14 +15,16 @@ function updateEnemies(dt) {
     for(var i = 0; i < enemies.length; ++i) {
         var enemy = enemies[i];
 
-        var dist2 = (echo.x - enemy.x) * (echo.x - enemy.x) + (echo.y - enemy.y) * (echo.y - enemy.y);
+        if(echo.active) {
+            var dist2 = (echo.x - enemy.x) * (echo.x - enemy.x) + (echo.y - enemy.y) * (echo.y - enemy.y);
 
-        if(enemy.echoTime <= 0) {
-            if(dist2 < echo.radius * echo.radius) {
-                enemy.echoTime = ENEMY_VISIBLE_TIME;
+            if(enemy.echoTime <= 0) {
+                if(dist2 < echo.radius * echo.radius) {
+                    enemy.echoTime = ENEMY_VISIBLE_TIME;
+                }
             }
+            enemy.echoTime -= dt;
         }
-        enemy.echoTime -= dt;
     }   
 }
 

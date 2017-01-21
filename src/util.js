@@ -21,3 +21,7 @@ function pixelated(context) {
 	context.msImageSmoothingEnabled = smooth;
 	context.imageSmoothingEnabled = smooth;
 }
+
+function distanceSqr(ax, ay, bx, by) {
+	return (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
+}
