@@ -12,8 +12,8 @@ function createEnemy(x, y) {
     });
 }
 
-/*function updateEnemies(player, dt) {
+function updateEnemies(player, dt) {
     for(var i = 0; i < enemies.length; ++i) {
         var enemy = enemies[i];
     }
-}*/
+}
