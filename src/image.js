@@ -14,7 +14,7 @@ enemyImage.onload = function() {
     enemyReady = true;
 }
 
-enemyImage.src = "graphics/enemy.png";
+enemyImage.src = "graphics/monster.png";
 
 var rocketReady = false;
 var rocketImage = new Image();

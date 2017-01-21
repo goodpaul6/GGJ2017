@@ -18,7 +18,7 @@ function updateRockets(dt) {
         rocket.x += Math.cos(rocket.angle) * ROCKET_SPEED * dt;
         rocket.y += Math.sin(rocket.angle) * ROCKET_SPEED * dt;
     
-        if(collideLevel(rocket.x, rocket.y, ROCKET_SIZE, ROCKET_SIZE)) {
+        if(collideLevelCircle(rocket.x + rocketImage.width / 2, rocket.y + rocketImage.height / 2, ROCKET_SIZE / 2)) {
             // TODO: Explosion
             rockets.splice(i, 1);
         }
@@ -32,13 +32,20 @@ function drawRockets() {
 
             ctx.save();
 
-           /*ctx.translate(rocketImage.width / 2, rocketImage.height / 2);
+            ctx.translate(rocket.x - camera.x, rocket.y - camera.y);
+
+            ctx.translate(rocketImage.width / 2, rocketImage.height / 2);
             ctx.rotate(rocket.angle);
-            ctx.translate(-rocketImage.width / 2, -rocketImage.height / 2);*/
+            ctx.translate(-rocketImage.width / 2, -rocketImage.height / 2);
             
-            ctx.drawImage(rocketImage, rocket.x - camera.x, rocket.y - camera.y);
+            ctx.drawImage(rocketImage, 0, 0);
 
             ctx.restore();
+
+            ctx.beginPath();
+            ctx.arc(rocket.x - camera.x + rocketImage.width / 2, rocket.y - camera.y + rocketImage.height / 2, ROCKET_SIZE / 2, 0, Math.PI * 2);
+            ctx.strokeStyle = "red";
+            ctx.stroke();
         }
     }
 }

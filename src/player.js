@@ -62,14 +62,12 @@ function updatePlayer(dt) {
 	var jump = (38 in keysJustPressed) || (87 in keysJustPressed);
 	var up = (38 in keysDown) || (87 in keysDown);
     var down = (40 in keysDown) || (83 in keysDown);
-	var shoot = (88 in keysDown) || (78 in keysDown);
+	var shoot = (88 in keysJustPressed) || (78 in keysJustPressed);
 
 	if (jump) {
-		if(player.grounded) {
-			player.dy = -10;
-			player.grounded = false;
-            player.jumped = true;
-        }
+		player.dy = -10;
+		player.grounded = false;
+		player.jumped = true;
 	} else if(!up) {
         if(!player.grounded && player.jumped) {
             if(player.dy < 0) {
@@ -114,11 +112,11 @@ function updatePlayer(dt) {
 	if(left) { 
 		player.flipped = true;
 		player.anim = PLAYER_ANIM_RUN;
-		player.dx = -300 * dt;
+		player.dx = -400 * dt;
 	} else if(right) {
 		player.flipped = false;
 		player.anim = PLAYER_ANIM_RUN;
-		player.dx = 300 * dt;
+		player.dx = 400 * dt;
 	} else {
 		player.dx = 0;
 		player.anim = PLAYER_ANIM_STAND;
@@ -129,7 +127,7 @@ function updatePlayer(dt) {
 	}
 	
 	if(shoot) {
-		shootWave(WAVE_SHOT_RED, player.x, player.y, player.flipped ? -1 : 1);
+		shootWave(WAVE_SHOT_RED, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
 	}
 
 	move(player, player.dx, player.dy, function() { 
