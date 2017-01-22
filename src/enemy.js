@@ -163,7 +163,7 @@ function updateEnemies(dt) {
         var die = function() {
             if(enemy.health <= 0) {
                 if(Math.random() <= ENEMY_RANDOM_DROP_CHANCE) {
-                    var index = Math.floor(Math.random() * (POWERUP_GRAB_BAG.length + 1));
+                    var index = Math.floor(Math.random() * POWERUP_GRAB_BAG.length);
                     var type = POWERUP_GRAB_BAG[index];
                     spawnPowerup(enemy.x, enemy.y, type);
                 }

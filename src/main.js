@@ -256,15 +256,24 @@ function draw() {
 }
 
 var then = Date.now();
+var elapsed = 0;
+
+const TIME_PER_FRAME = 1000 / 60;
 
 function loop() {
 	var now = Date.now();
 	var delta = now - then;
 
-	update(delta / 1000);
+	elapsed += delta;
+
+	while(elapsed >= TIME_PER_FRAME) {
+		update(TIME_PER_FRAME / 1000);
+		elapsed -= TIME_PER_FRAME;	
+			
+		keysJustPressed = {};
+	}
+
 	draw();
-	
-	keysJustPressed = {};
 
 	then = now;
 	
