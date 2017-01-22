@@ -2,6 +2,7 @@ var rockets = [];
 
 const ROCKET_SPEED = 400;
 const ROCKET_SIZE = 8;
+const ROCKET_STEER_FACTOR = 5;
 
 function shootRocket(x, y, angle) {
     rockets.push({
@@ -15,17 +16,21 @@ function updateRockets(dt) {
     for(var i = 0; i < rockets.length; ++i) {
         var rocket = rockets[i];
 
-        rocket.x += Math.cos(rocket.angle) * ROCKET_SPEED * dt;
-        rocket.y += Math.sin(rocket.angle) * ROCKET_SPEED * dt;
-        
-        collidePlayer(rocket.x - ROCKET_SIZE / 2, rocket.y - ROCKET_SIZE / 2, ROCKET_SIZE, ROCKET_SIZE, function() {
-            // Hit player
-        });
+        var dist2player = distanceSqr(player.x + player.width / 2, player.y + player.height / 2, rocket.x, rocket.y);
+
+        if(dist2player < 32 * 32) {
+            addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);
+            rockets.splice(i, 1);
+            player.health -= 1;
+        }
 
         if(collideLevelCircle(rocket.x + rocketImage.width / 2, rocket.y + rocketImage.height / 2, ROCKET_SIZE / 2)) {
-            // TODO: Explosion
+            addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);
             rockets.splice(i, 1);
         }
+
+        rocket.x += Math.cos(rocket.angle) * ROCKET_SPEED * dt;
+        rocket.y += Math.sin(rocket.angle) * ROCKET_SPEED * dt;
     }
 }
 
@@ -46,10 +51,10 @@ function drawRockets() {
 
             ctx.restore();
 
-            ctx.beginPath();
+            /*ctx.beginPath();
             ctx.arc(rocket.x - camera.x + rocketImage.width / 2, rocket.y - camera.y + rocketImage.height / 2, ROCKET_SIZE / 2, 0, Math.PI * 2);
             ctx.strokeStyle = "red";
-            ctx.stroke();
+            ctx.stroke();*/
         }
     }
 }

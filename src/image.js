@@ -54,12 +54,16 @@ playerImage.onload = function() {
 
 playerImage.src = "graphics/player.png";
 
-const PLAYER_FRAME_WIDTH = 48;
-const PLAYER_FRAME_HEIGHT = 60;
+const PLAYER_FRAME_WIDTH = 128;
+const PLAYER_FRAME_HEIGHT = 128;
 
-const PLAYER_ANIM_RUN = [0,1,2,3,4,5,6,7];
-const PLAYER_ANIM_STAND = [8];
-const PLAYER_ANIM_JUMP = [9];
+const PLAYER_STAND_FRAME_TIME = 0.1;
+const PLAYER_RUN_FRAME_TIME = 0.05;
+const PLAYER_JUMP_FRAME_TIME = 0.2;
+
+const PLAYER_ANIM_RUN = [6,7,8,9,10,11,12,13];
+const PLAYER_ANIM_STAND = [0];
+const PLAYER_ANIM_JUMP = [3,4,5];
 
 var redWaveReady = false;
 var redWaveImage = new Image();
@@ -96,3 +100,30 @@ starImage.onload = function() {
 }
 
 starImage.src = "graphics/star.png";
+
+var doorReady = false;
+var doorImage = new Image();
+
+doorImage.onload = function() {
+    doorReady = true;
+}
+
+doorImage.src = "graphics/door.png";
+
+var redEnemyReady = false;
+var redEnemyImage = new Image();
+
+redEnemyImage.onload = function() {
+    redEnemyReady = true;
+}
+
+redEnemyImage.src = "graphics/redenemy.png";
+
+var yellowEnemyReady = false;
+var yellowEnemyImage = new Image();
+
+yellowEnemyImage.onload = function() {
+    yellowEnemyReady = true;
+}
+
+yellowEnemyImage.src = "graphics/yellowenemy.png";

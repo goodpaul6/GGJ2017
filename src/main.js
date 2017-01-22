@@ -104,7 +104,13 @@ function init() {
 					player.x = object.x;
 					player.y = object.y;
 				} else if(object.type == "enemy") {
-					createEnemy(ENEMY_TYPE_ROCKET, object.x + level.tilewidth / 2, object.y + level.tileheight / 2);
+					if(object.name == "red") {
+						createSpawner(object.x, object.y, ENEMY_TYPE_ROCKET, WAVE_SHOT_RED);
+					} else if(object.name == "blue") {
+						createSpawner(object.x, object.y, ENEMY_TYPE_ROCKET, WAVE_SHOT_BLUE);
+					} else if(object.name == "yellow") {
+						createSpawner(object.x, object.y, ENEMY_TYPE_ROCKET, WAVE_SHOT_YELLOW);
+					}
 				}
 			}
 		}
@@ -136,6 +142,7 @@ function update(dt) {
 	updateEcho(dt);
 	updateWaves(dt);
 	updateExplosions(dt);
+	updateSpawners(dt);
 }
 
 function drawFrame(image, x, y, frame, fw, fh, flip, scaleX, scaleY) {
@@ -162,8 +169,8 @@ function drawFrame(image, x, y, frame, fw, fh, flip, scaleX, scaleY) {
 }
 
 function drawStars() {
-	for(var y = Math.floor(camera.y / 32); y < Math.floor((camera.y + canvas.height) / 32); ++y) {
-		for(var x = Math.floor(camera.x / 32); x < Math.floor((camera.x + canvas.width) / 32); ++x) {
+	for(var y = Math.floor(-camera.y / 32); y < Math.floor((-camera.y + canvas.height) / 32); ++y) {
+		for(var x = Math.floor(-camera.x / 32); x < Math.floor((-camera.x + canvas.width) / 32); ++x) {
 			if(Math.random() > 0.9) {
 				ctx.drawImage(starImage, x * 32, y * 32);
 			}
@@ -179,8 +186,6 @@ function draw() {
 
 	ctx.fillStyle = "#00001D";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-	drawStars();
 
 	var layer = level.layers[0];
 
@@ -212,6 +217,7 @@ function draw() {
 			ECHO_DISP_WIDTH, ECHO_DISP_HEIGHT);
 	}*/
 
+	drawSpawners();
 	drawPlayer();
 	drawEcho();
 	drawWaves();

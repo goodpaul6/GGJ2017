@@ -1,17 +1,24 @@
 "use strict";
 
 const PLAYER_START_AMMO = 30;
-const PLAYER_SHOT_TIME = 0.3;
+const PLAYER_SHOT_TIME = 1;
 const PLAYER_START_HEALTH = 5;
 const PLAYER_JET_ACCEL = 30;
+
+const PLAYER_SPRITE_OFF_X = 40;
+const PLAYER_WIDTH = 36;
+const PLAYER_HEIGHT = 125;
+
+const PLAYER_GUN_OFF_X = 60;
+const PLAYER_GUN_OFF_Y = 45;
 
 var player = {
 	x : 100,
 	y : 100,
 	dx : 0,
 	dy : 0,
-	width : PLAYER_FRAME_WIDTH,
-	height : PLAYER_FRAME_HEIGHT,
+	width : PLAYER_WIDTH,
+	height : PLAYER_HEIGHT,
 	grounded : false,
 	frameIndex : 0,
 	anim : PLAYER_ANIM_STAND,
@@ -21,7 +28,8 @@ var player = {
     jumped : false,
 	shotTime: 0,
 	ammo : PLAYER_START_AMMO,
-	health: PLAYER_START_HEALTH
+	health: PLAYER_START_HEALTH,
+	loop : false
 };
 
 function move(ent, x, y, collideX, collideY) {
@@ -51,13 +59,6 @@ function move(ent, x, y, collideX, collideY) {
 			break;
 		}
 	}
-}
-
-function collidePlayer(x, y, w, h, callback) {
-	if(x + w < player.x || player.x + player.w < x) return;
-	if(y + h < player.y || player.y + player.h < y) return;
-
-	callback();
 }
 
 function updatePlayer(dt) {
@@ -108,35 +109,49 @@ function updatePlayer(dt) {
 	if(left) { 
 		player.flipped = true;
 		player.anim = PLAYER_ANIM_RUN;
+		player.animFrameTime = PLAYER_RUN_FRAME_TIME;
+		player.loop = true;
 		player.dx = -400 * dt;
 	} else if(right) {
 		player.flipped = false;
 		player.anim = PLAYER_ANIM_RUN;
+		player.animFrameTime = PLAYER_RUN_FRAME_TIME;
+		player.loop = true;
 		player.dx = 400 * dt;
 	} else {
 		player.dx = 0;
 		player.anim = PLAYER_ANIM_STAND;
+		player.animFrameTime = PLAYER_STAND_FRAME_TIME;
 	}
 
 	if(!player.grounded) {
+		if(player.anim != PLAYER_ANIM_JUMP) {
+			player.animTimer = 0;
+		}
+
 		player.anim = PLAYER_ANIM_JUMP;
+		player.animFrameTime = PLAYER_JUMP_FRAME_TIME;
+		player.loop = false;
 	}
 
 	if(player.ammo > 0) {
+		var offX = player.flipped ? -(PLAYER_GUN_OFF_X - PLAYER_SPRITE_OFF_X) : PLAYER_GUN_OFF_X;
+		var offY = PLAYER_GUN_OFF_Y;
+
 		if(shootRed && player.shotTime <= 0) {
-			shootWave(WAVE_SHOT_RED, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+			shootWave(WAVE_SHOT_RED, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 			player.shotTime = PLAYER_SHOT_TIME;
 			player.ammo -= 1;
 		}
 
 		if(shootBlue && player.shotTime <= 0) {
-			shootWave(WAVE_SHOT_BLUE, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+			shootWave(WAVE_SHOT_BLUE, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 			player.shotTime = PLAYER_SHOT_TIME;
 			player.ammo -= 1;
 		}
 
 		if(shootYellow && player.shotTime <= 0) {
-			shootWave(WAVE_SHOT_YELLOW, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+			shootWave(WAVE_SHOT_YELLOW, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 			player.shotTime = PLAYER_SHOT_TIME;
 			player.ammo -= 1;
 		}
@@ -155,8 +170,12 @@ function updatePlayer(dt) {
 	if(player.anim) {
 		player.frameIndex = Math.floor(player.animTimer / player.animFrameTime);
 		if(player.frameIndex >= player.anim.length) {
-			player.frameIndex = 0;
-			player.animTimer = 0;
+			if(player.loop) {
+				player.frameIndex = 0;
+				player.animTimer = 0;
+			} else {
+				player.frameIndex = player.anim.length - 1;
+			}
 		}
 
 		player.animTimer += dt;
@@ -165,7 +184,7 @@ function updatePlayer(dt) {
 
 function drawPlayer() {
 	if(playerReady) {
-		drawFrame(playerImage, player.x - camera.x, player.y - camera.y, player.anim[player.frameIndex], PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT, player.flipped);
+		drawFrame(playerImage, player.x - camera.x - PLAYER_SPRITE_OFF_X, player.y - camera.y, player.anim[player.frameIndex], PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT, player.flipped);
 	}
 
 	ctx.fillStyle = "rgb(250, 250, 250)";
@@ -173,4 +192,5 @@ function drawPlayer() {
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
 	ctx.fillText("Ammo: " + player.ammo, 32, 32);
+	ctx.fillText("Health: " + player.health, 32, 64);
 }

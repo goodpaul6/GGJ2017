@@ -30,8 +30,9 @@ function updateWaves(dt) {
     for(var i = 0; i < waves.length; ++i) {
         var wave = waves[i];
     
-        if(wave.length >= WAVE_MAX_LENGTH) {
+        if(Math.abs(wave.length) >= WAVE_MAX_LENGTH) {
             wave.done = true;
+            wave.length = Math.sign(wave.length) * WAVE_MAX_LENGTH;
         }
 
         if(collideLevel(wave.x, wave.y - WAVE_AMPLITUDE / 2, wave.length, WAVE_AMPLITUDE)) {
@@ -41,15 +42,19 @@ function updateWaves(dt) {
         if(!wave.done) {
             if(wave.dir > 0) {
                 collideEnemy(wave.x, wave.y - WAVE_AMPLITUDE / 2, wave.length, WAVE_AMPLITUDE, function(e) {
-                    e.hit = true;
-                    wave.done = true;
-                    wave.length -= wave.dir * e.width;
+                    if(e.color == wave.shot) {
+                        e.hit = true;
+                        wave.done = true;
+                        wave.length -= wave.dir * e.width / 1.5;
+                    }
                 });
             } else {
                 collideEnemy(wave.x + wave.length, wave.y - WAVE_AMPLITUDE / 2, -wave.length, WAVE_AMPLITUDE, function(e) {
-                    e.hit = true;
-                    wave.done = true;
-                    wave.length -= wave.dir * e.width;
+                    if(e.color == wave.shot) {
+                        e.hit = true;
+                        wave.done = true;
+                        wave.length -= wave.dir * e.width / 1.5;
+                    }
                 });
             }
             
@@ -115,5 +120,7 @@ function drawWaves() {
         ctx.stroke();
         
         ctx.lineWidth = prevLineWidth;
+
+        ctx.globalAlpha = prevAlpha;
     }
 }
