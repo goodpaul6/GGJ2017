@@ -87,3 +87,12 @@ yellowWaveImage.onload = function() {
 }
 
 yellowWaveImage.src = "graphics/yellowwave.png";
+
+var starReady = false;
+var starImage = new Image();
+
+starImage.onload = function() {
+    starReady = false;
+}
+
+startImage.src = "graphics/star.png";

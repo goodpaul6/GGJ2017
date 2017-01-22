@@ -22,11 +22,6 @@ var player = {
 	health: PLAYER_START_HEALTH
 };
 
-if (player.health <= 0) {
-	addExplosion(player.x, player.y);
-	
-}
-
 function move(ent, x, y, collideX, collideY) {
 	const SAMPLES = 5;
 
