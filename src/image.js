@@ -32,6 +32,10 @@ explosionImage.onload = function() {
 
 explosionImage.src = "graphics/explosion.png";
 
+const EXPLOSION_FRAME_TIME = 1 / 30;
+const EXPLOSION_FRAME_WIDTH = 32;
+const EXPLOSION_FRAME_HEIGHT = 32;
+
 var rocketReady = false;
 var rocketImage = new Image();
 

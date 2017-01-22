@@ -1,7 +1,5 @@
 var explosions = [];
 
-const EXPLOSION_FRAME_TIME = 1 / 9;
-
 function addExplosion(x, y) {
     explosions.push({
         x : x,
@@ -15,7 +13,7 @@ function updateExplosions(dt) {
     for(var i = 0; i < explosions.length; ++i) {
         var explosion = explosions[i];
 
-        explosion.frame = explosion.timer / EXPLOSION_FRAME_TIME;
+        explosion.frame = Math.floor(explosion.timer / EXPLOSION_FRAME_TIME);
         if(explosion.frame >= 10) {
             explosions.splice(i, 1);
         }
@@ -29,7 +27,7 @@ function drawExplosions() {
         for(var i = 0; i < explosions.length; ++i) {
             var exp = explosions[i];
 
-            drawFrame(explosionImage, exp.x - camera.x, exp.y - camera.y, exp.frame, EXPLOSION_FRAME_WIDTH, EXPLOSION_FRAME_HEIGHT);
+            drawFrame(explosionImage, exp.x - camera.x, exp.y - camera.y, exp.frame, EXPLOSION_FRAME_WIDTH, EXPLOSION_FRAME_HEIGHT, false, 4, 4);
         }
     }
 }

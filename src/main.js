@@ -162,16 +162,20 @@ function update(dt) {
 	updatePlayer(dt);
 	updateEcho(dt);
 	updateWaves(dt);
+	updateExplosions(dt);
 }
 
-function drawFrame(image, x, y, frame, fw, fh, flip) {
+function drawFrame(image, x, y, frame, fw, fh, flip, scaleX, scaleY) {
+	scaleX = scaleX || 1;
+	scaleY = scaleY || 1;
+
 	var columns = image.width / fw;
 	
 	var u = frame % columns;
 	var v = Math.floor(frame / columns);
 
 	if(!flip) {
-		ctx.drawImage(image, u * fw, v * fh, fw, fh, x, y, fw, fh);
+		ctx.drawImage(image, u * fw, v * fh, fw, fh, x, y, fw * scaleX, fh * scaleY);
 	} else {
 		ctx.save();
 		
@@ -254,6 +258,7 @@ function draw() {
 	drawWaves();
 	drawEnemies();
 	drawRockets();
+	drawExplosions();
 }
 
 var then = Date.now();
