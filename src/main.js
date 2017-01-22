@@ -12,6 +12,16 @@ var camera = {
 };
 
 var level = TileMaps["level"];
+var collisionLayer = (function() {
+	for(var i = 0; i < level.layers.length; ++i) {
+		var layer = level.layers[i];
+		if(layer.name == "Main") {
+			return layer;
+		}
+	}
+	
+	return null;
+})();
 
 function collideLevel(x, y, w, h) {
 	var left = Math.floor(x / level.tilewidth);
@@ -33,7 +43,7 @@ function collideLevel(x, y, w, h) {
 
 	for(var y = top; y < bottom; ++y) {
 		for(var x = left; x < right; ++x) {
-			if(level.layers[0].data[x + y * level.width] > 0) {
+			if(collisionLayer.data[x + y * level.width] > 0) {
 				return true;
 			}
 		}
@@ -115,6 +125,10 @@ function init() {
 			}
 		}
 	}
+
+	setTimeout(function() {
+		ost.play();
+	}, 100);
 }
 
 const CAMERA_SPEED_FACTOR = 5;
@@ -188,15 +202,28 @@ function draw() {
 	ctx.fillStyle = "#00001D";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	var layer = level.layers[0];
-
 	if(groundReady) {
-		for(var y = 0; y < layer.height; ++y) {
-			for(var x = 0; x < layer.width; ++x) {
-				var tile = layer.data[x + y * layer.width];
-				if(tile > 0) {
-					tile -= 1;
-					drawFrame(ground, x * level.tilewidth - camera.x, y * level.tileheight - camera.y, tile, level.tilewidth, level.tileheight, false);
+		var left = Math.floor(camera.x / level.tilewidth);
+		var top = Math.floor(camera.y / level.tileheight);
+		var right = Math.ceil((camera.x + canvas.width) / level.tilewidth);
+		var bottom = Math.ceil((camera.y + canvas.height) / level.tileheight);
+
+		for(var i = 0; i < level.layers.length; ++i) {
+			var layer = level.layers[i];
+
+			if(layer.type == "tilelayer") {
+				for(var y = top; y < bottom; ++y) {
+					if(y < 0 || y >= layer.height) continue;
+					
+					for(var x = left; x < right; ++x) {
+						if(x < 0 || x >= layer.width) continue;
+
+						var tile = layer.data[x + y * layer.width];
+						if(tile > 0) {
+							tile -= 1;
+							drawFrame(ground, x * level.tilewidth - camera.x, y * level.tileheight - camera.y, tile, level.tilewidth, level.tileheight, false);
+						}
+					}
 				}
 			}
 		}

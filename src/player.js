@@ -1,7 +1,7 @@
 "use strict";
 
-const PLAYER_START_AMMO = 30;
-const PLAYER_SHOT_TIME = 0.5;
+const PLAYER_START_AMMO = 3;
+const PLAYER_SHOT_TIME = 0.3;
 const PLAYER_START_HEALTH = 5;
 const PLAYER_TERMINAL_VEL = 1000;
 
@@ -135,27 +135,22 @@ function updatePlayer(dt) {
 		player.loop = false;
 	}
 
-	if(player.ammo > 0) {
-		var offX = player.flipped ? -(PLAYER_GUN_OFF_X - PLAYER_SPRITE_OFF_X) : PLAYER_GUN_OFF_X;
-		var offY = PLAYER_GUN_OFF_Y;
+	var offX = player.flipped ? -(PLAYER_GUN_OFF_X - PLAYER_SPRITE_OFF_X) : PLAYER_GUN_OFF_X;
+	var offY = PLAYER_GUN_OFF_Y;
 
-		if(shootRed && player.shotTime <= 0) {
-			shootWave(WAVE_SHOT_RED, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
-			player.shotTime = PLAYER_SHOT_TIME;
-			player.ammo -= 1;
-		}
+	if(shootRed && player.shotTime <= 0) {
+		shootWave(WAVE_SHOT_RED, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
+		player.shotTime = PLAYER_SHOT_TIME;
+	}
 
-		if(shootBlue && player.shotTime <= 0) {
-			shootWave(WAVE_SHOT_BLUE, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
-			player.shotTime = PLAYER_SHOT_TIME;
-			player.ammo -= 1;
-		}
+	if(shootBlue && player.shotTime <= 0) {
+		shootWave(WAVE_SHOT_BLUE, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
+		player.shotTime = PLAYER_SHOT_TIME;
+	}
 
-		if(shootYellow && player.shotTime <= 0) {
-			shootWave(WAVE_SHOT_YELLOW, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
-			player.shotTime = PLAYER_SHOT_TIME;
-			player.ammo -= 1;
-		}
+	if(shootYellow && player.shotTime <= 0) {
+		shootWave(WAVE_SHOT_YELLOW, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
+		player.shotTime = PLAYER_SHOT_TIME;
 	}
 
 	if(player.shotTime > 0) {
@@ -166,19 +161,14 @@ function updatePlayer(dt) {
 		player.dy = Math.sign(player.dy) * PLAYER_TERMINAL_VEL * dt;
 	}
 
-	var beatIndex = Math.floor(player.beatTimer / TIME_PER_BEAT);
-	
-	/*if(doEcho && !echo.active) {
+	if(doEcho && !echo.active && player.ammo > 0) {
 		echo.active = true;
 		echo.radius = 0;
-		echo.timer = TIME_PER_BEAT;
+		echo.timer = ECHO_TIME;
 		echo.x = player.x + player.width / 2;
 		echo.y = player.y + player.height / 2;
-		echo.beatOffset = player.beatTimer - (beatIndex * TIME_PER_BEAT);
+		player.ammo -= 1;
 	}
-
-	player.lastBeatIndex = beatIndex;
-	player.beatTimer += dt;*/
 
 	move(player, player.dx, player.dy, function() { 
 		player.dx = 0; 
@@ -207,9 +197,17 @@ function drawPlayer() {
 	}
 
 	ctx.fillStyle = "rgb(250, 250, 250)";
-	ctx.font = "20px Helvetica";
+	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
-	ctx.textBaseline = "top";
-	ctx.fillText("Ammo: " + player.ammo, 32, 32);
-	ctx.fillText("Health: " + player.health, 32, 64);
+	ctx.textBaseline = "middle";
+
+	for(var i = 0; i < player.health; ++i) {
+		ctx.drawImage(heartImage, i * heartImage.width, 0);
+	}
+
+	ctx.drawImage(ammoImage, 0, heartImage.height + 10);
+	ctx.fillText("" + player.ammo, ammoImage.width + 5, heartImage.height + 10 + ammoImage.height / 2);
+
+	ctx.fillText("Wave: " + spawnLevel, 0, heartImage.height + 10 + ammoImage.height + 30);
+	ctx.fillText("Enemies: " + enemies.length, 0, heartImage.height + 10 + ammoImage.height + 60);
 }
