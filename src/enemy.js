@@ -94,7 +94,7 @@ function updateEnemies(dt) {
                 var canShoot = !collideLineLevel(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, player.x, player.y);
 
                 if(dist2 < ENEMY_ROCKET_FOLLOW_RADIUS * ENEMY_ROCKET_FOLLOW_RADIUS) {
-                    var angle = Math.atan2(player.y - (enemy.y + enemy.height / 2), player.x - (enemy.x + enemy.width / 2));
+                    var angle = Math.atan2((player.y + player.height / 2) - (enemy.y + enemy.height / 2), (player.x + player.width / 2) - (enemy.x + enemy.width / 2));
                     
                     if(canShoot && dist2 < ENEMY_ROCKET_CHASE_RADIUS * ENEMY_ROCKET_CHASE_RADIUS) {
                         if(enemy.shootTimer <= 0) {

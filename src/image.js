@@ -36,10 +36,18 @@ const EXPLOSION_FRAME_TIME = 1 / 30;
 const EXPLOSION_FRAME_WIDTH = 120;
 const EXPLOSION_FRAME_HEIGHT = 94;
 
+var titleReady = false;
+var titleImage = new Image();
+
+titleImage.onload = function() {
+    titleReady = true;
+}
+
+titleImage.src = "graphics/title.png";
+
 var heartReady = false;
 var heartImage = new Image();
 
-heartReady = false;
 heartImage.onload = function() {
     heartReady = true;
 }

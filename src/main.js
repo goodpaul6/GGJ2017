@@ -23,6 +23,12 @@ var collisionLayer = (function() {
 	return null;
 })();
 
+const TITLE_TIME = 4;
+var titleTimer = TITLE_TIME;
+
+var shakeMag = 2;
+var shakeTimer = 0;
+
 function collideLevel(x, y, w, h) {
 	var left = Math.floor(x / level.tilewidth);
 	var top = Math.floor(y / level.tileheight);
@@ -151,6 +157,15 @@ function update(dt) {
 	camera.y += (player.y + player.height / 2 - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
 
 	if(player.health >= 0) {
+		titleTimer -= dt;
+
+		if(shakeTimer > 0) {
+			camera.x += Math.random() * (shakeMag * 2) - shakeMag;
+			camera.y += Math.random() * (shakeMag * 2) - shakeMag;
+
+			shakeTimer -= dt;
+		}
+
 		updateEnemies(dt);
 		updateRockets(dt);
 		updatePlayer(dt);
@@ -207,10 +222,12 @@ function draw() {
 	if(player.health <= 0) {
 		ctx.fillStyle = "rgb(250, 250, 250)";
 		ctx.font = "72px Helvetica";
-		ctx.textAlign = "middle";
+		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 
-		ctx.fillText("GAME OVER!", canvas.width / 2 - 300, canvas.height / 2);
+		ctx.fillText("GAME OVER!", canvas.width / 2, canvas.height / 2 + titleImage.height);
+
+		titleTimer = 1;
 
 		return;
 	}
@@ -266,6 +283,13 @@ function draw() {
 	drawRockets();
 	drawExplosions();
 	drawPowerups();
+
+	if(titleTimer > 0) {
+		var prevAlpha = ctx.globalAlpha;
+		ctx.globalAlpha = titleTimer / TITLE_TIME;
+		ctx.drawImage(titleImage, canvas.width / 2 - titleImage.width / 2, canvas.height / 2 - titleImage.height / 2);
+		ctx.globalAlpha = prevAlpha;
+	}
 }
 
 var then = Date.now();

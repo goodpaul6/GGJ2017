@@ -1,7 +1,7 @@
 "use strict";
 
 const PLAYER_START_AMMO = 3;
-const PLAYER_SHOT_TIME = 0.3;
+const PLAYER_SHOT_TIME = 0.6;
 const PLAYER_START_HEALTH = 5;
 const PLAYER_TERMINAL_VEL = 1000;
 
@@ -141,16 +141,25 @@ function updatePlayer(dt) {
 	if(shootRed && player.shotTime <= 0) {
 		shootWave(WAVE_SHOT_RED, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
+		shakeMag = 2;
+		shakeTimer = 0.05;
+		redSound.play();
 	}
 
 	if(shootBlue && player.shotTime <= 0) {
 		shootWave(WAVE_SHOT_BLUE, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
+		shakeMag = 2;
+		shakeTimer = 0.05;
+		blueSound.play();
 	}
 
 	if(shootYellow && player.shotTime <= 0) {
 		shootWave(WAVE_SHOT_YELLOW, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
+		shakeMag = 2;
+		shakeTimer = 0.05;
+		yellowSound.play();
 	}
 
 	if(player.shotTime > 0) {
@@ -168,6 +177,9 @@ function updatePlayer(dt) {
 		echo.x = player.x + player.width / 2;
 		echo.y = player.y + player.height / 2;
 		player.ammo -= 1;
+
+		shakeMag = 5;
+		shakeTimer = 0.2;
 	}
 
 	move(player, player.dx, player.dy, function() { 
