@@ -2,7 +2,7 @@
 
 const PLAYER_START_AMMO = 30;
 const PLAYER_SHOT_TIME = 0.3;
-
+const PLAYER_START_HEALTH = 5;
 var player = {
 	x : 100,
 	y : 100,
@@ -18,8 +18,14 @@ var player = {
 	flipped : false,
     jumped : false,
 	shotTime: 0,
-	ammo : PLAYER_START_AMMO
+	ammo : PLAYER_START_AMMO,
+	health: PLAYER_START_HEALTH
 };
+
+if (player.health <= 0) {
+	addExplosion(player.x, player.y);
+	
+}
 
 function move(ent, x, y, collideX, collideY) {
 	const SAMPLES = 5;
@@ -48,6 +54,13 @@ function move(ent, x, y, collideX, collideY) {
 			break;
 		}
 	}
+}
+
+function collidePlayer(x, y, w, h, callback) {
+	if(x + w < player.x || player.x + player.w < x) return;
+	if(y + h < player.y || player.y + player.h < y) return;
+
+	callback();
 }
 
 function updatePlayer(dt) {

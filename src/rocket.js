@@ -17,7 +17,11 @@ function updateRockets(dt) {
 
         rocket.x += Math.cos(rocket.angle) * ROCKET_SPEED * dt;
         rocket.y += Math.sin(rocket.angle) * ROCKET_SPEED * dt;
-    
+        
+        collidePlayer(rocket.x - ROCKET_SIZE / 2, rocket.y - ROCKET_SIZE / 2, ROCKET_SIZE, ROCKET_SIZE, function() {
+            // Hit player
+        });
+
         if(collideLevelCircle(rocket.x + rocketImage.width / 2, rocket.y + rocketImage.height / 2, ROCKET_SIZE / 2)) {
             // TODO: Explosion
             rockets.splice(i, 1);
