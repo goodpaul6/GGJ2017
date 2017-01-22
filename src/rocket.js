@@ -1,13 +1,11 @@
 var rockets = [];
 
-const ROCKET_SPEED = 400;
+const ROCKET_SPEED = 500;
 const ROCKET_SIZE = 8;
 const ROCKET_STEER_FACTOR = 5;
 
-const ROCKET_SPRITE_OFF_X = 7;
-const ROCKET_SPRITE_OFF_Y = 6;
-
-const ROCKET_WIDTH = 
+const ROCKET_WIDTH = 64;
+const ROCKET_HEIGHT = 64;
 
 function shootRocket(x, y, angle) {
     rockets.push({
@@ -29,7 +27,11 @@ function updateRockets(dt) {
             player.health -= 1;
         }*/
 
-        collidePlayer(rocket.x, rocket.y, rocket)
+        collidePlayer(rocket.x, rocket.y, ROCKET_WIDTH, ROCKET_HEIGHT, function() {
+            addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);
+            rockets.splice(i, 1);
+            player.health -= 1;
+        });
 
         if(collideLevelCircle(rocket.x + rocketImage.width / 2, rocket.y + rocketImage.height / 2, ROCKET_SIZE / 2)) {
             addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);

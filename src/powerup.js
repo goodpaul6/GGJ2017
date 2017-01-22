@@ -1,6 +1,6 @@
 var powers = [];
 
-const POWERUP_PICK_DIST = 32;
+const POWERUP_PICK_DIST = 76;
 
 const POWERUP_AMMO = 0;
 const POWERUP_COUNT = 1;
@@ -20,7 +20,7 @@ function updatePowerups(dt) {
         var power = powers[i];
 
         if(power.type == POWERUP_AMMO) {
-            var dist2 = distanceSqr(power.x + powerImage.width / 2, power.y + power.height / 2, player.x + player.width / 2, player.y + player.height / 2);
+            var dist2 = distanceSqr(power.x, power.y, player.x + player.width / 2, player.y + player.height / 2);
 
             if(dist2 < POWERUP_PICK_DIST * POWERUP_PICK_DIST) {
                 powers.splice(i, 1);

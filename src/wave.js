@@ -11,7 +11,7 @@ const WAVE_RADIUS_SPEED = 12;
 const WAVE_LINE_WIDTH = 2;
 const WAVE_LINE_SPEED = 4;
 
-const WAVE_MAX_LENGTH = 300;
+const WAVE_MAX_LENGTH = 400;
 const WAVE_AMPLITUDE = 8;
 
 function shootWave(shot, x, y, dir) {
