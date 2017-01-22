@@ -45,7 +45,7 @@ function updateWaves(dt) {
                     if(e.color == wave.shot) {
                         e.hit = true;
                         wave.done = true;
-                        wave.length -= wave.dir * e.width / 1.5;
+                        wave.length = Math.abs(e.x - wave.x);
                     }
                 });
             } else {
@@ -53,12 +53,14 @@ function updateWaves(dt) {
                     if(e.color == wave.shot) {
                         e.hit = true;
                         wave.done = true;
-                        wave.length -= wave.dir * e.width / 1.5;
+                        wave.length = -Math.abs((e.x + e.width) - wave.x);
                     }
                 });
             }
             
-            wave.length += WAVE_SPEED * dt * wave.dir;
+            if(!wave.done) {
+                wave.length += WAVE_SPEED * dt * wave.dir;
+            }
         } else {
             if(wave.timer <= 0.1) {
                 waves.splice(i, 1);

@@ -22,6 +22,17 @@ const ENEMY_START_HEALTH = 3;
 const ENEMY_HOVER_AMPLITUDE = 2;
 const ENEMY_HOVER_PERIOD_FACTOR = 10;
 
+const ENEMY_COLLISION_RADIUS = 64;
+const ENEMY_PUSH_FORCE = 10;
+
+const ENEMY_RANDOM_DROP_CHANCE = 0.5;
+
+const ENEMY_SPRITE_OFF_X = 41;
+const ENEMY_SPRITE_OFF_Y = 18;
+
+const ENEMY_WIDTH = 58;
+const ENEMY_HEIGHT = 87;
+
 function createEnemy(type, x, y, color) {
     enemies.push({
         type : type,
@@ -32,8 +43,8 @@ function createEnemy(type, x, y, color) {
         tangibleTime : 0,
         shootTimer : 0,
         state : ENEMY_STATE_SEEN_PLAYER,
-        width : ENEMY_FRAME_WIDTH,
-        height : ENEMY_FRAME_HEIGHT,
+        width : ENEMY_WIDTH,
+        height : ENEMY_HEIGHT,
         hit : false,
         dir : 1,
         frameIndex : 0,
@@ -132,6 +143,34 @@ function updateEnemies(dt) {
                 }
             }
 
+            for(var j = i + 1; j < enemies.length; ++j) {
+                var otherEnemy = enemies[j];
+
+                var dist2 = distanceSqr(enemy.x, enemy.y, otherEnemy.x, otherEnemy.y);
+
+                if(dist2 < ENEMY_COLLISION_RADIUS * ENEMY_COLLISION_RADIUS) {
+                    var angle = Math.atan2(otherEnemy.y - enemy.y, otherEnemy.x - enemy.x);
+
+                    enemy.dx -= Math.cos(angle) * (ENEMY_PUSH_FORCE / 2);
+                    enemy.dy -= Math.sin(angle) * (ENEMY_PUSH_FORCE / 2);
+                    
+                    otherEnemy.dx += Math.cos(angle) * (ENEMY_PUSH_FORCE / 2);
+                    otherEnemy.dy += Math.sin(angle) * (ENEMY_PUSH_FORCE / 2);
+                }
+            }
+            
+            /*if(echo.active && goodEcho()) {
+                var dist2 = distanceSqr(echo.x, echo.y, enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
+                
+                if(dist2 < ENEMY_COLLISION_RADIUS * ENEMY_COLLISION_RADIUS + echo.radius * echo.radius) {
+                    var angle = Math.atan2(echo.y - enemy.y, echo.x - enemy.x);
+                    var overlap = Math.sqrt(dist2) - ENEMY_COLLISION_RADIUS - echo.radius;
+
+                    enemy.dx += Math.cos(angle) * overlap;
+                    enemy.dy += Math.sin(angle) * overlap;
+                }
+            }*/
+
             move(enemy, enemy.dx, enemy.dy, function() {
                 enemy.dx = 0;
             }, function() {
@@ -142,6 +181,11 @@ function updateEnemies(dt) {
         if(enemy.hit) {
             enemy.health -= 1;
             if(enemy.health <= 0) {
+                if(Math.random() <= ENEMY_RANDOM_DROP_CHANCE) {
+                    var type = Math.ceil(Math.random() * POWERUP_COUNT) - 1;
+                    spawnPowerup(enemy.x, enemy.y, type);
+                }
+
                 addExplosion(enemy.x, enemy.y);
                 enemies.splice(i, 1);
             }
@@ -171,13 +215,16 @@ function drawEnemies() {
             
             ctx.globalAlpha = 1;
 
+            var px = enemy.x - camera.x - ENEMY_SPRITE_OFF_X;
+            var py = enemy.y - camera.y - ENEMY_SPRITE_OFF_Y + Math.sin(enemy.hoverTimer * ENEMY_HOVER_PERIOD_FACTOR) * ENEMY_HOVER_AMPLITUDE;
+
             if(enemy.frames) {
                 if(enemy.color == WAVE_SHOT_RED) { 
-                    drawFrame(redEnemyImage, enemy.x - camera.x, enemy.y - camera.y + Math.sin(enemy.hoverTimer * ENEMY_HOVER_PERIOD_FACTOR) * ENEMY_HOVER_AMPLITUDE, enemy.frames[enemy.frameIndex], ENEMY_FRAME_WIDTH, ENEMY_FRAME_HEIGHT, enemy.dir < 0);
+                    drawFrame(redEnemyImage, px, py, enemy.frames[enemy.frameIndex], ENEMY_FRAME_WIDTH, ENEMY_FRAME_HEIGHT, enemy.dir < 0);
                 } else if(enemy.color == WAVE_SHOT_BLUE) {
-                    drawFrame(enemyImage, enemy.x - camera.x, enemy.y - camera.y + Math.sin(enemy.hoverTimer * ENEMY_HOVER_PERIOD_FACTOR) * ENEMY_HOVER_AMPLITUDE, enemy.frames[enemy.frameIndex], ENEMY_FRAME_WIDTH, ENEMY_FRAME_HEIGHT, enemy.dir < 0);
+                    drawFrame(enemyImage, px, py, enemy.frames[enemy.frameIndex], ENEMY_FRAME_WIDTH, ENEMY_FRAME_HEIGHT, enemy.dir < 0);
                 } else if(enemy.color == WAVE_SHOT_YELLOW) {
-                    drawFrame(yellowEnemyImage, enemy.x - camera.x, enemy.y - camera.y + Math.sin(enemy.hoverTimer * ENEMY_HOVER_PERIOD_FACTOR) * ENEMY_HOVER_AMPLITUDE, enemy.frames[enemy.frameIndex], ENEMY_FRAME_WIDTH, ENEMY_FRAME_HEIGHT, enemy.dir < 0);
+                    drawFrame(yellowEnemyImage, px, py, enemy.frames[enemy.frameIndex], ENEMY_FRAME_WIDTH, ENEMY_FRAME_HEIGHT, enemy.dir < 0);
                 }
             }
         }

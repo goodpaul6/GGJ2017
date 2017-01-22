@@ -1,7 +1,7 @@
 "use strict";
 
 const PLAYER_START_AMMO = 30;
-const PLAYER_SHOT_TIME = 1;
+const PLAYER_SHOT_TIME = 0.5;
 const PLAYER_START_HEALTH = 5;
 const PLAYER_JET_ACCEL = 25;
 const PLAYER_TERMINAL_VEL = 700;
@@ -35,6 +35,9 @@ var player = {
 	health: PLAYER_START_HEALTH,
 	loop : false,
 	jetFuel : PLAYER_JET_FUEL,
+	/*beatTimer : 0,
+	beats : [],
+	lastBeatIndex : -1*/
 };
 
 function move(ent, x, y, collideX, collideY) {
@@ -64,6 +67,13 @@ function move(ent, x, y, collideX, collideY) {
 			break;
 		}
 	}
+}
+
+function collidePlayer(x, y, w, h, callback) {
+	if(x + w < player.x || player.x + player.width < x) return;
+	if(y + h < player.y || player.y + player.height < y) return;
+
+	callback();
 }
 
 function updatePlayer(dt) {
@@ -110,14 +120,6 @@ function updatePlayer(dt) {
 
 	if (!up && player.jetFuel < PLAYER_JET_FUEL){
 		player.jetFuel += PLAYER_FUEL_REGEN_RATE * dt;
-	}
-
-	if(doEcho && !echo.active) {
-		echo.active = true;
-		echo.timer = ECHO_TIME;
-		echo.x = player.x + player.width / 2;
-		echo.y = player.y + player.height / 2;
-		dingSound.play();
 	}
 	
 	if(left) { 
@@ -178,6 +180,20 @@ function updatePlayer(dt) {
 	if(Math.abs(player.dy) >= PLAYER_TERMINAL_VEL * dt) {
 		player.dy = Math.sign(player.dy) * PLAYER_TERMINAL_VEL * dt;
 	}
+
+	var beatIndex = Math.floor(player.beatTimer / TIME_PER_BEAT);
+	
+	/*if(doEcho && !echo.active) {
+		echo.active = true;
+		echo.radius = 0;
+		echo.timer = TIME_PER_BEAT;
+		echo.x = player.x + player.width / 2;
+		echo.y = player.y + player.height / 2;
+		echo.beatOffset = player.beatTimer - (beatIndex * TIME_PER_BEAT);
+	}
+
+	player.lastBeatIndex = beatIndex;
+	player.beatTimer += dt;*/
 
 	move(player, player.dx, player.dy, function() { 
 		player.dx = 0; 

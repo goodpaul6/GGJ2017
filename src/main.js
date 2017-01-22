@@ -68,8 +68,8 @@ function init() {
 	canvas = document.createElement("canvas");
 	document.body.appendChild(canvas);
 
-	canvas.width = 640;
-	canvas.height = 480;
+	canvas.width = 960;
+	canvas.height = 720;
 
 	canvas.style["position"] = "fixed";
 	canvas.style["top"] = "50%";
@@ -143,6 +143,7 @@ function update(dt) {
 	updateWaves(dt);
 	updateExplosions(dt);
 	updateSpawners(dt);
+	updatePowerups(dt);
 }
 
 function drawFrame(image, x, y, frame, fw, fh, flip, scaleX, scaleY) {
@@ -224,6 +225,7 @@ function draw() {
 	drawEnemies();
 	drawRockets();
 	drawExplosions();
+	drawPowerups();
 }
 
 var then = Date.now();

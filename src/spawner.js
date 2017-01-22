@@ -1,8 +1,8 @@
 var spawners = [];
 
 const SPAWN_COUNT_FACTOR = 10;
-const SPAWN_WAIT_TIME_MIN = 2;
-const SPAWN_WAIT_TIME_MAX = 4;
+const SPAWN_WAIT_TIME_MIN = 10;
+const SPAWN_WAIT_TIME_MAX = 15;
 
 var spawnLevel = 1;
 var spawnCount = 10;
@@ -31,6 +31,8 @@ function updateSpawners(dt) {
             createEnemy(spawner.type, spawner.x, spawner.y, spawner.color);
             spawner.timer += Math.random() * (SPAWN_WAIT_TIME_MAX - SPAWN_WAIT_TIME_MIN) + SPAWN_WAIT_TIME_MIN;
         }
+
+        spawner.timer -= dt;
     }
 }
 
