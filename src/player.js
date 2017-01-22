@@ -1,13 +1,9 @@
 "use strict";
 
 const PLAYER_START_AMMO = 30;
-const PLAYER_SHOT_TIME = 1;
+const PLAYER_SHOT_TIME = 0.5;
 const PLAYER_START_HEALTH = 5;
-const PLAYER_JET_ACCEL = 25;
-const PLAYER_TERMINAL_VEL = 700;
-const PLAYER_JET_FUEL = 120;
-const PLAYER_FUEL_REGEN_RATE = 20;
-const PLAYER_FUEL_USE_RATE = 30; 
+const PLAYER_TERMINAL_VEL = 1000;
 
 const PLAYER_SPRITE_OFF_X = 40;
 const PLAYER_WIDTH = 36;
@@ -34,7 +30,10 @@ var player = {
 	ammo : PLAYER_START_AMMO,
 	health: PLAYER_START_HEALTH,
 	loop : false,
-	jetFuel : PLAYER_JET_FUEL,
+	doubleJumped : false,
+	/*beatTimer : 0,
+	beats : [],
+	lastBeatIndex : -1*/
 };
 
 function move(ent, x, y, collideX, collideY) {
@@ -66,10 +65,18 @@ function move(ent, x, y, collideX, collideY) {
 	}
 }
 
+function collidePlayer(x, y, w, h, callback) {
+	if(x + w < player.x || player.x + player.width < x) return;
+	if(y + h < player.y || player.y + player.height < y) return;
+
+	callback();
+}
+
 function updatePlayer(dt) {
 	if(collideLevel(player.x, player.y + 1, player.width, player.height)) {
 		player.grounded = true;
         player.jumped = false;
+		player.doubleJumped = false;
 		player.dy = 0;
 	} else {
 		player.grounded = false;
@@ -86,29 +93,20 @@ function updatePlayer(dt) {
 	var shootBlue = (88 in keysDown) || (75 in keysDown);
 	var shootYellow = (67 in keysDown) || (76 in keysDown);
 
-	if(jump && player.grounded) {
-		player.grounded = false;
-		player.dy = -4;
+	if(jump) {
+		if(player.grounded) {
+			player.grounded = false;
+			player.jumped = true;
+			player.doubleJumped = false;
+			player.dy = -10;
+		} else {
+			if(!player.doubleJumped) {
+				player.doubleJumped = true;
+				player.dy = -10;
+			}
+		}
 	}
 
-	if(up && player.jetFuel > 0) {
-		player.dy -= PLAYER_JET_ACCEL * dt;
-		player.grounded = false;
-		player.jetFuel -= PLAYER_FUEL_USE_RATE * dt;
-	}
-
-	if (!up && player.jetFuel < PLAYER_JET_FUEL){
-		player.jetFuel += PLAYER_FUEL_REGEN_RATE * dt;
-	}
-
-	if(doEcho && !echo.active) {
-		echo.active = true;
-		echo.timer = ECHO_TIME;
-		echo.x = player.x + player.width / 2;
-		echo.y = player.y + player.height / 2;
-		dingSound.play();
-	}
-	
 	if(left) { 
 		player.flipped = true;
 		player.anim = PLAYER_ANIM_RUN;
@@ -164,12 +162,23 @@ function updatePlayer(dt) {
 		player.shotTime -= dt;
 	}
 
-	if(player.health <= 0){
-		window.alert("Game Over!");
-	}
 	if(Math.abs(player.dy) >= PLAYER_TERMINAL_VEL * dt) {
 		player.dy = Math.sign(player.dy) * PLAYER_TERMINAL_VEL * dt;
 	}
+
+	var beatIndex = Math.floor(player.beatTimer / TIME_PER_BEAT);
+	
+	/*if(doEcho && !echo.active) {
+		echo.active = true;
+		echo.radius = 0;
+		echo.timer = TIME_PER_BEAT;
+		echo.x = player.x + player.width / 2;
+		echo.y = player.y + player.height / 2;
+		echo.beatOffset = player.beatTimer - (beatIndex * TIME_PER_BEAT);
+	}
+
+	player.lastBeatIndex = beatIndex;
+	player.beatTimer += dt;*/
 
 	move(player, player.dx, player.dy, function() { 
 		player.dx = 0; 
@@ -203,6 +212,4 @@ function drawPlayer() {
 	ctx.textBaseline = "top";
 	ctx.fillText("Ammo: " + player.ammo, 32, 32);
 	ctx.fillText("Health: " + player.health, 32, 64);
-	ctx.fillStyle = "green";
-	ctx.fillRect(0, 0, 100 * (player.jetFuel / PLAYER_JET_FUEL), 20);
 }

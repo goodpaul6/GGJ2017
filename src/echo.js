@@ -3,11 +3,15 @@ var echo = {
 	timer : 0,
 	radius : 0,
 	x : 0,
-	y : 0
+	y : 0,
+	beatOffset : 0
 };
 
 const ECHO_TIME = 1;
-const ECHO_SPEED = 300;
+const ECHO_SPEED = 600;
+
+const ECHO_OFFSET_GOOD = 0.2;
+const ECHO_OFFSET_OKAY = 0.3;
 
 function updateEcho(dt) {
 	if(echo.active) {
@@ -21,6 +25,14 @@ function updateEcho(dt) {
 	}
 }
 
+function goodEcho() {
+	if(echo.beatOffset <= ECHO_OFFSET_GOOD) {
+		return true; 
+	}
+
+	return false;
+}
+
 function drawEcho() {
     if(echo.active) {
         ctx.strokeStyle = "white";
@@ -31,7 +43,7 @@ function drawEcho() {
 
 		var prevAlpha = ctx.globalAlpha;
 
-		ctx.globalAlpha = echo.timer / ECHO_TIME;
+		ctx.globalAlpha = echo.timer / ECHO_TIME + 0.05;
 		ctx.stroke();
 		ctx.globalAlpha = prevAlpha;
 	}

@@ -1,8 +1,11 @@
 var rockets = [];
 
-const ROCKET_SPEED = 400;
+const ROCKET_SPEED = 500;
 const ROCKET_SIZE = 8;
 const ROCKET_STEER_FACTOR = 5;
+
+const ROCKET_WIDTH = 64;
+const ROCKET_HEIGHT = 64;
 
 function shootRocket(x, y, angle) {
     rockets.push({
@@ -16,17 +19,32 @@ function updateRockets(dt) {
     for(var i = 0; i < rockets.length; ++i) {
         var rocket = rockets[i];
 
-        var dist2player = distanceSqr(player.x + player.width / 2, player.y + player.height / 2, rocket.x, rocket.y);
+        /*var dist2player = distanceSqr(player.x + player.width / 2, player.y + player.height / 2, rocket.x, rocket.y);
 
         if(dist2player < 32 * 32) {
             addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);
             rockets.splice(i, 1);
             player.health -= 1;
-        }
+        }*/
+
+        collidePlayer(rocket.x, rocket.y, ROCKET_WIDTH, ROCKET_HEIGHT, function() {
+            addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);
+            rockets.splice(i, 1);
+            player.health -= 1;
+        });
 
         if(collideLevelCircle(rocket.x + rocketImage.width / 2, rocket.y + rocketImage.height / 2, ROCKET_SIZE / 2)) {
             addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);
             rockets.splice(i, 1);
+        }
+
+        if(echo.active)  {
+            var dist2 = distanceSqr(rocket.x, rocket.y, echo.x, echo.y);
+
+            if(dist2 < echo.radius * echo.radius) {
+                addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);
+                rockets.splice(i, 1);
+            }
         }
 
         rocket.x += Math.cos(rocket.angle) * ROCKET_SPEED * dt;

@@ -127,3 +127,12 @@ yellowEnemyImage.onload = function() {
 }
 
 yellowEnemyImage.src = "graphics/yellowenemy.png";
+
+var ammoReady = false;
+var ammoImage = new Image();
+
+ammoImage.onload = function() {
+    ammoReady = true;
+}
+
+ammoImage.src = "graphics/ammo.png";

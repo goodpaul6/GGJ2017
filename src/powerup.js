@@ -1,14 +1,17 @@
 var powers = [];
 
-const POWERUP_PICK_DIST = 10;
+const POWERUP_PICK_DIST = 76;
+
 const POWERUP_AMMO = 0;
+const POWERUP_COUNT = 1;
+
 const POWERUP_AMMO_AMOUNT = 10;
 
 function spawnPowerup(x, y, type) {
     powers.push({
         x : x,
         y : y,
-        type : type,
+        type : type
     });
 }
 
@@ -17,7 +20,7 @@ function updatePowerups(dt) {
         var power = powers[i];
 
         if(power.type == POWERUP_AMMO) {
-            var dist2 = distanceSqr(power.x, power.y, player.x, player.y);
+            var dist2 = distanceSqr(power.x, power.y, player.x + player.width / 2, player.y + player.height / 2);
 
             if(dist2 < POWERUP_PICK_DIST * POWERUP_PICK_DIST) {
                 powers.splice(i, 1);
@@ -27,8 +30,14 @@ function updatePowerups(dt) {
     }
 }
 
-function drawPowerups(dt) {
+function drawPowerups() {
     for(var i = 0; i < powers.length; ++i) {
-        
+        var power = powers[i];
+
+        if(power.type == POWERUP_AMMO) {
+            if(ammoReady) {
+                ctx.drawImage(ammoImage, power.x - camera.x, power.y - camera.y);
+            }
+        }       
     }
 }
