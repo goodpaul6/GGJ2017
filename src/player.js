@@ -3,6 +3,8 @@
 const PLAYER_START_AMMO = 30;
 const PLAYER_SHOT_TIME = 0.3;
 const PLAYER_START_HEALTH = 5;
+const PLAYER_JET_ACCEL = 30;
+
 var player = {
 	x : 100,
 	y : 100,
@@ -78,7 +80,7 @@ function updatePlayer(dt) {
 	var shootBlue = (88 in keysDown) || (75 in keysDown);
 	var shootYellow = (67 in keysDown) || (76 in keysDown);
 
-	if (jump) {
+	/*if (jump) {
 		player.dy = -10;
 		player.grounded = false;
 		player.jumped = true;
@@ -88,7 +90,12 @@ function updatePlayer(dt) {
                 player.dy = 0;
             }
         }
-    }
+}*/
+
+	if(up){
+		player.dy -= PLAYER_JET_ACCEL * dt;
+		player.grounded = false;
+	}
 
 	if(doEcho && !echo.active) {
 		echo.active = true;
@@ -96,16 +103,6 @@ function updatePlayer(dt) {
 		echo.x = player.x + player.width / 2;
 		echo.y = player.y + player.height / 2;
 		dingSound.play();
-	}
-
-	if (down) {
-		player.dy += 50 * dt;
-		
-		if(collideEnemy(player.x, player.y + 1, player.width, player.height, function(e) {
-			e.hit = true;
-			player.jumped = false;
-			player.dy = -9;
-		}));
 	}
 	
 	if(left) { 
