@@ -3,7 +3,11 @@
 const PLAYER_START_AMMO = 30;
 const PLAYER_SHOT_TIME = 0.3;
 const PLAYER_START_HEALTH = 5;
-const PLAYER_JET_ACCEL = 30;
+const PLAYER_JET_ACCEL = 25;
+const PLAYER_TERMINAL_VEL = 700;
+const PLAYER_JET_FUEL = 120;
+const PLAYER_FUEL_REGEN_RATE = 20;
+const PLAYER_FUEL_USE_RATE = 30; 
 
 var player = {
 	x : 100,
@@ -21,7 +25,8 @@ var player = {
     jumped : false,
 	shotTime: 0,
 	ammo : PLAYER_START_AMMO,
-	health: PLAYER_START_HEALTH
+	health: PLAYER_START_HEALTH,
+	jetFuel : PLAYER_JET_FUEL,
 };
 
 function move(ent, x, y, collideX, collideY) {
@@ -91,10 +96,19 @@ function updatePlayer(dt) {
             }
         }
 }*/
+	if(jump && player.grounded) {
+		player.grounded = false;
+		player.dy = -4;
+	}
 
-	if(up){
+	if(up && player.jetFuel > 0) {
 		player.dy -= PLAYER_JET_ACCEL * dt;
 		player.grounded = false;
+		player.jetFuel -= PLAYER_FUEL_USE_RATE * dt;
+	}
+
+	if (!up && player.jetFuel < PLAYER_JET_FUEL){
+		player.jetFuel += PLAYER_FUEL_REGEN_RATE * dt;
 	}
 
 	if(doEcho && !echo.active) {
@@ -146,6 +160,10 @@ function updatePlayer(dt) {
 		player.shotTime -= dt;
 	}
 
+	if(Math.abs(player.dy) >= PLAYER_TERMINAL_VEL * dt) {
+		player.dy = Math.sign(player.dy) * PLAYER_TERMINAL_VEL * dt;
+	}
+
 	move(player, player.dx, player.dy, function() { 
 		player.dx = 0; 
 	}, function() {
@@ -173,4 +191,7 @@ function drawPlayer() {
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
 	ctx.fillText("Ammo: " + player.ammo, 32, 32);
+
+	ctx.fillStyle = "green";
+	ctx.fillRect(0, 0, 100 * (player.jetFuel / PLAYER_JET_FUEL), 20);
 }
