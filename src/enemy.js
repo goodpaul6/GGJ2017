@@ -33,6 +33,8 @@ const ENEMY_SPRITE_OFF_Y = 18;
 const ENEMY_WIDTH = 58;
 const ENEMY_HEIGHT = 87;
 
+var enemiesKilled = 0;
+
 function createEnemy(type, x, y, color) {
     enemies.push({
         type : type,
@@ -170,6 +172,8 @@ function updateEnemies(dt) {
 
                 addExplosion(enemy.x - EXPLOSION_FRAME_WIDTH / 2, enemy.y - EXPLOSION_FRAME_HEIGHT / 2);
                 enemies.splice(i, 1);
+
+                ++enemiesKilled;
             }
         }
             

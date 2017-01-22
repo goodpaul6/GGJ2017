@@ -221,13 +221,12 @@ function draw() {
 
 	if(player.health <= 0) {
 		ctx.fillStyle = "rgb(250, 250, 250)";
-		ctx.font = "72px Helvetica";
+		ctx.font = "32px Helvetica";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 
-		ctx.fillText("GAME OVER!", canvas.width / 2, canvas.height / 2 + titleImage.height);
-
-		titleTimer = 1;
+		ctx.fillText("GAME OVER! PRESS CTRL+R TO RESTART.", canvas.width / 2, canvas.height / 2 + 200);
+		ctx.drawImage(titleImage, canvas.width / 2 - titleImage.width / 2, canvas.height / 2 - titleImage.height / 2);		
 
 		return;
 	}
