@@ -60,3 +60,30 @@ const PLAYER_FRAME_HEIGHT = 60;
 const PLAYER_ANIM_RUN = [0,1,2,3,4,5,6,7];
 const PLAYER_ANIM_STAND = [8];
 const PLAYER_ANIM_JUMP = [9];
+
+var redWaveReady = false;
+var redWaveImage = new Image();
+
+redWaveImage.onload = function() {
+    redWaveReady = true;
+}
+
+redWaveImage.src = "graphics/redwave.png";
+
+var blueWaveReady = false;
+var blueWaveImage = new Image();
+
+blueWaveImage.onload = function() {
+    blueWaveReady = true;
+}
+
+blueWaveImage.src = "graphics/bluewave.png";
+
+var yellowWaveReady = false;
+var yellowWaveImage = new Image();
+
+yellowWaveImage.onload = function() {
+    yellowWaveReady = true;
+}
+
+yellowWaveImage.src = "graphics/yellowwave.png";

@@ -4,22 +4,23 @@ const WAVE_SHOT_RED = 0;
 const WAVE_SHOT_BLUE = 1;
 const WAVE_SHOT_YELLOW = 2;
 
-const WAVE_LIFE = 4;
-const WAVE_SPEED = 600;
+const WAVE_LIFE = 0.3;
+const WAVE_SPEED = 5000;
 const WAVE_START_RADIUS = 4;
 const WAVE_RADIUS_SPEED = 12;
 const WAVE_LINE_WIDTH = 2;
 const WAVE_LINE_SPEED = 4;
 
-const WAVE_LENGTH = 40;
-const WAVE_AMPLITUDE = 7;
+const WAVE_MAX_LENGTH = 300;
+const WAVE_AMPLITUDE = 8;
 
 function shootWave(shot, x, y, dir) {
     waves.push({
         shot : shot, 
         x : x,
         y : y,
-        timer : 0,
+        timer : WAVE_LIFE,
+        length : 0,
         dir : dir
     });
 }
@@ -28,18 +29,30 @@ function updateWaves(dt) {
     for(var i = 0; i < waves.length; ++i) {
         var wave = waves[i];
     
-        wave.x += WAVE_SPEED * wave.dir * dt;    
-        
-        if(collideLevel(wave.x, wave.y, 2, 2)) {
+        if(collideLevel(wave.x, wave.y - WAVE_AMPLITUDE / 2, wave.length, WAVE_AMPLITUDE)) {
             waves.splice(i, 1);
         }
 
-        if(collideEnemy(wave.x, wave.y - WAVE_AMPLITUDE / 2, WAVE_LENGTH, WAVE_AMPLITUDE, function(e) {
-            e.hit = true;
-            waves.splice(i, 1);
-        }));
-
-        wave.timer += dt;
+        if(Math.abs(wave.length) < WAVE_MAX_LENGTH) {
+            if(wave.dir > 0) {
+                collideEnemy(wave.x, wave.y - WAVE_AMPLITUDE / 2, wave.length, WAVE_AMPLITUDE, function(e) {
+                    e.hit = true;
+                    waves.splice(i, 1);
+                });
+            } else {
+                collideEnemy(wave.x + wave.length, wave.y - WAVE_AMPLITUDE / 2, -wave.length, WAVE_AMPLITUDE, function(e) {
+                    e.hit = true;
+                    waves.splice(i, 1);
+                });
+            }
+            
+            wave.length += WAVE_SPEED * dt * wave.dir;
+        } else {
+            if(wave.timer <= 0.1) {
+                waves.splice(i, 1);
+            }
+            wave.timer -= dt;
+        }
     }
 }
 
@@ -47,20 +60,37 @@ function drawWaves() {
     for(var i = 0; i < waves.length; ++i) {
         var wave = waves[i];
 
+        var prevAlpha = ctx.globalAlpha;
+
+        ctx.globalAlpha = wave.timer / WAVE_LIFE;
+        if(ctx.globalAlpha < 0) {
+            ctx.globalAlpha = 0;
+        }
+
+        var waveImage = null;
         if(wave.shot == WAVE_SHOT_RED) {
             ctx.strokeStyle = "red";
+            waveImage = redWaveImage;
         } else if(wave.shot == WAVE_SHOT_BLUE) {
             ctx.strokeStyle = "blue";
+            waveImage = blueWaveImage;
         } else if(wave.shot == WAVE_SHOT_YELLOW) {
             ctx.strokeStyle = "yellow";
+            waveImage = yellowWaveImage;
+        }
+
+        if(wave.dir < 0) { 
+            ctx.drawImage(waveImage, wave.x - camera.x + wave.length, wave.y - camera.y - WAVE_AMPLITUDE, -wave.length, WAVE_AMPLITUDE * 2);
+        } else {
+            ctx.drawImage(waveImage, wave.x - camera.x, wave.y - camera.y - WAVE_AMPLITUDE, wave.length, WAVE_AMPLITUDE * 2);
         }
 
         ctx.beginPath();
 
         ctx.moveTo(wave.x - camera.x, wave.y - camera.y);
         for(var j = 0; j < 360; j += 10) {
-            var x = wave.x - camera.x + (j / 360) * WAVE_LENGTH;
-            var y = wave.y + Math.sin(wave.x + ((j * Math.PI) / WAVE_LENGTH)) * WAVE_AMPLITUDE - camera.y;
+            var x = wave.x - camera.x + (j / 360) * wave.length;
+            var y = wave.y + Math.sin(wave.x + j * 60) * WAVE_AMPLITUDE - camera.y;
 
             ctx.lineTo(x, y);
             ctx.moveTo(x, y);

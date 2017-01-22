@@ -123,8 +123,8 @@ function updateEnemies(dt) {
                             dy = ENEMY_ROCKET_ACCEL_SPEED * dt;
                         }
 
-                        if(collideLevel(enemy.x, enemy.y + dy, enemy.width, enemy.height)) {
-                            dx = -ENEMY_ROCKET_ACCEL_SPEED * dt;
+                        if(collideLevel(enemy.x, enemy.y + enemy.dy, enemy.width, enemy.height)) {
+                            dx = -enemy.dir * ENEMY_ROCKET_ACCEL_SPEED * dt;
                         }
 
                         enemy.loop = false;

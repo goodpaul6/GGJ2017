@@ -26,3 +26,9 @@ function updatePowerups(dt) {
         }
     }
 }
+
+function drawPowerups(dt) {
+    for(var i = 0; i < powers.length; ++i) {
+        
+    }
+}
