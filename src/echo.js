@@ -10,9 +10,6 @@ var echo = {
 const ECHO_TIME = 1;
 const ECHO_SPEED = 600;
 
-const ECHO_OFFSET_GOOD = 0.2;
-const ECHO_OFFSET_OKAY = 0.3;
-
 function updateEcho(dt) {
 	if(echo.active) {
 		echo.timer -= dt;
@@ -23,14 +20,6 @@ function updateEcho(dt) {
 
 		echo.radius += ECHO_SPEED * dt;
 	}
-}
-
-function goodEcho() {
-	if(echo.beatOffset <= ECHO_OFFSET_GOOD) {
-		return true; 
-	}
-
-	return false;
 }
 
 function drawEcho() {

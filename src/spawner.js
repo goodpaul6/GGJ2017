@@ -7,6 +7,8 @@ const SPAWN_WAIT_TIME_MAX = 15;
 var spawnLevel = 1;
 var spawnCount = 10;
 
+var spawnWait = 0;
+
 function createSpawner(x, y, type, color) {
     spawners.push({
         x : x,
@@ -18,14 +20,23 @@ function createSpawner(x, y, type, color) {
 }
 
 function updateSpawners(dt) {
+    if(spawnWait > 0) {
+        spawnWait -= dt;
+        if(spawnWait < 0) {
+            ++spawnLevel;
+            spawnCount = spawnLevel * SPAWN_COUNT_FACTOR;
+        }
+        return;
+    }
+
     for(var i = 0; i < spawners.length; ++i) {
         var spawner = spawners[i];
 
         if(spawner.timer <= 0) {
             --spawnCount;
             if(spawnCount == 0) {
-                ++spawnLevel;
-                spawnCount = spawnLevel * SPAWN_COUNT_FACTOR;
+                spawnWait = 10;
+                break;
             }
 
             createEnemy(spawner.type, spawner.x, spawner.y, spawner.color);

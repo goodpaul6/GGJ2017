@@ -99,7 +99,7 @@ function updateEnemies(dt) {
                     if(canShoot && dist2 < ENEMY_ROCKET_CHASE_RADIUS * ENEMY_ROCKET_CHASE_RADIUS) {
                         if(enemy.shootTimer <= 0) {
                             enemy.shootTimer = ENEMY_ROCKET_SHOOT_COOLDOWN;
-                            shootRocket(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, angle);
+                            shootRocket(enemy.x + enemy.width / 2 - ROCKET_WIDTH / 2, enemy.y + enemy.height / 2 - ROCKET_HEIGHT / 2, angle);
                         }
 
                         if(enemy.anim != ENEMY_ANIM_STOP) {
@@ -158,36 +158,37 @@ function updateEnemies(dt) {
                     otherEnemy.dy += Math.sin(angle) * (ENEMY_PUSH_FORCE / 2);
                 }
             }
-            
-            /*if(echo.active && goodEcho()) {
-                var dist2 = distanceSqr(echo.x, echo.y, enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
-                
-                if(dist2 < ENEMY_COLLISION_RADIUS * ENEMY_COLLISION_RADIUS + echo.radius * echo.radius) {
-                    var angle = Math.atan2(echo.y - enemy.y, echo.x - enemy.x);
-                    var overlap = Math.sqrt(dist2) - ENEMY_COLLISION_RADIUS - echo.radius;
+        }
 
-                    enemy.dx += Math.cos(angle) * overlap;
-                    enemy.dy += Math.sin(angle) * overlap;
+        var die = function() {
+            if(enemy.health <= 0) {
+                if(Math.random() <= ENEMY_RANDOM_DROP_CHANCE) {
+                    var index = Math.floor(Math.random() * POWERUP_GRAB_BAG.length);
+                    var type = POWERUP_GRAB_BAG[index];
+                    spawnPowerup(enemy.x, enemy.y, type);
                 }
-            }*/
 
-            move(enemy, enemy.dx, enemy.dy, function() {
-                enemy.dx = 0;
-            }, function() {
-                enemy.dy = 0;
-            });
+                addExplosion(enemy.x - EXPLOSION_FRAME_WIDTH / 2, enemy.y - EXPLOSION_FRAME_HEIGHT / 2);
+                enemies.splice(i, 1);
+            }
+        }
+            
+        if(echo.active) {
+            var dist2 = distanceSqr(echo.x, echo.y, enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
+            
+            if(dist2 < ENEMY_COLLISION_RADIUS * ENEMY_COLLISION_RADIUS + echo.radius * echo.radius) {
+                var angle = Math.atan2(echo.y - enemy.y, echo.x - enemy.x);
+                var overlap = Math.sqrt(dist2) - (ENEMY_COLLISION_RADIUS + echo.radius);
+
+                enemy.dx += Math.cos(angle) * overlap * dt;
+                enemy.dy += Math.sin(angle) * overlap * dt;
+            }
         }
 
         if(enemy.hit) {
             enemy.health -= 1;
             if(enemy.health <= 0) {
-                if(Math.random() <= ENEMY_RANDOM_DROP_CHANCE) {
-                    var type = Math.ceil(Math.random() * POWERUP_COUNT) - 1;
-                    spawnPowerup(enemy.x, enemy.y, type);
-                }
-
-                addExplosion(enemy.x, enemy.y);
-                enemies.splice(i, 1);
+                die();
             }
             enemy.hit = false;
         }
@@ -205,6 +206,12 @@ function updateEnemies(dt) {
 
             enemy.animTimer += dt;
         }
+        
+        move(enemy, enemy.dx, enemy.dy, function() {
+            enemy.dx = 0;
+        }, function() {
+            enemy.dy = 0;
+        });
     }   
 }
 

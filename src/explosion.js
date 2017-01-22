@@ -27,7 +27,7 @@ function drawExplosions() {
         for(var i = 0; i < explosions.length; ++i) {
             var exp = explosions[i];
 
-            drawFrame(explosionImage, exp.x - camera.x, exp.y - camera.y, exp.frame, EXPLOSION_FRAME_WIDTH, EXPLOSION_FRAME_HEIGHT, false, 4, 4);
+            drawFrame(explosionImage, exp.x - camera.x, exp.y - camera.y, exp.frame, EXPLOSION_FRAME_WIDTH, EXPLOSION_FRAME_HEIGHT, false, 2, 2);
         }
     }
 }

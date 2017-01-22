@@ -33,8 +33,18 @@ explosionImage.onload = function() {
 explosionImage.src = "graphics/explosion.png";
 
 const EXPLOSION_FRAME_TIME = 1 / 30;
-const EXPLOSION_FRAME_WIDTH = 32;
-const EXPLOSION_FRAME_HEIGHT = 32;
+const EXPLOSION_FRAME_WIDTH = 120;
+const EXPLOSION_FRAME_HEIGHT = 94;
+
+var heartReady = false;
+var heartImage = new Image();
+
+heartReady = false;
+heartImage.onload = function() {
+    heartReady = true;
+}
+
+heartImage.src = "graphics/heart.png";
 
 var rocketReady = false;
 var rocketImage = new Image();
