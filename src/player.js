@@ -14,7 +14,9 @@ var player = {
 	animFrameTime : 1 / 12,
 	flipped : false,
     jumped : false,
-	echoTime: 0
+	echoTime: 0,
+	shotTime: 0,
+	shooting: false
 };
 
 function move(ent, x, y, collideX, collideY) {
@@ -25,7 +27,7 @@ function move(ent, x, y, collideX, collideY) {
 
 	for(var i = 0; i < SAMPLES; ++i) {
 		if(!collideLevel(ent.x + moveX, ent.y, ent.width, ent.height)) {
-			ent.x += moveX;
+			ent.x += moveX; 
 		} else {
 			if(collideX) {
 				collideX();
@@ -62,7 +64,9 @@ function updatePlayer(dt) {
 	var jump = (38 in keysJustPressed) || (87 in keysJustPressed);
 	var up = (38 in keysDown) || (87 in keysDown);
     var down = (40 in keysDown) || (83 in keysDown);
-	var shoot = (88 in keysJustPressed) || (78 in keysJustPressed);
+	var shootRed = (90 in keysDown) || (74 in keysDown);
+	var shootBlue = (88 in keysDown) || (75 in keysDown);
+	var shootYellow = (67 in keysDown) || (76 in keysDown);
 
 	if (jump) {
 		player.dy = -10;
@@ -126,9 +130,31 @@ function updatePlayer(dt) {
 		player.anim = PLAYER_ANIM_JUMP;
 	}
 	
-	if(shoot) {
+	if(shootRed && !player.shooting) {
 		shootWave(WAVE_SHOT_RED, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+		player.shotTime = 4;
+		player.shooting = true;
 	}
+
+	if(shootBlue && !player.shooting) {
+		shootWave(WAVE_SHOT_BLUE, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+		player.shotTime = 4;
+		player.shooting = true;
+	}
+
+	if(shootYellow && !player.shooting) {
+		shootWave(WAVE_SHOT_YELLOW, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+		player.shotTime = 4;
+		player.shooting = true;
+	}
+
+	function shotTimer() {
+		if(player.shotTime > 0) {
+			player.shotTime -= 0.2;
+		} else {player.shooting = false;}
+	}
+
+shotTimer();
 
 	move(player, player.dx, player.dy, function() { 
 		player.dx = 0; 
