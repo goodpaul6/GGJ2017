@@ -1,11 +1,11 @@
 var spawners = [];
 
-const SPAWN_COUNT_FACTOR = 10;
-const SPAWN_WAIT_TIME_MIN = 10;
-const SPAWN_WAIT_TIME_MAX = 15;
+const SPAWN_COUNT_FACTOR = 5;
+const SPAWN_WAIT_TIME_MIN = 20;
+const SPAWN_WAIT_TIME_MAX = 25;
 
 var spawnLevel = 1;
-var spawnCount = 10;
+var spawnCount = 5;
 
 var spawnWait = 0;
 
