@@ -6,20 +6,6 @@ var ctx = null;
 var keysDown = {};
 var keysJustPressed = {};
 
-const ECHO_NORMAL_FREQ = 0;
-const ECHO_RED_FREQ = 1;
-const ECHO_BLUE_FREQ = 2;
-const ECHO_YELLOW_FREQ = 3;
-
-var echo = {
-	active : false,
-	freq : 0,
-	timer : 0,
-	radius : 0,
-	x : 0,
-	y : 0
-};
-
 var camera = {
 	x : 0,
 	y : 0
@@ -125,21 +111,8 @@ function init() {
 	}
 }
 
-const ECHO_TIME = 1;
-const ECHO_SPEED = 300;
 const CAMERA_SPEED_FACTOR = 5;
 
-function updateEcho(dt) {
-	if(echo.active) {
-		echo.timer -= dt;
-		if(echo.timer <= 0) {
-			echo.active = false;
-			echo.radius = 0;
-		}
-
-		echo.radius += ECHO_SPEED * dt;
-	}
-}
 
 /*function updateEcho(dt) {
 	if (echo.frequency === ECHO_NORMAL_FREQ){
@@ -188,9 +161,6 @@ function drawFrame(image, x, y, frame, fw, fh, flip, scaleX, scaleY) {
 	}
 }
 
-const ECHO_DISP_WIDTH = 24;
-const ECHO_DISP_HEIGHT = 16;
-
 function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -214,11 +184,8 @@ function draw() {
 		}
 	}
 
-	if(playerReady) {
-		drawFrame(playerImage, player.x - camera.x, player.y - camera.y, player.anim[player.frameIndex], PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT, player.flipped);
-	}
 
-	if(player.echoTime > 0) {
+	/*if(player.echoTime > 0) {
 		if(echo.freq == ECHO_NORMAL_FREQ) {
 			ctx.fillStyle = "white";
 		} else if(echo.freq == ECHO_RED_FREQ) {
@@ -231,30 +198,10 @@ function draw() {
 
 		ctx.fillRect(player.x + player.width / 2 - ECHO_DISP_WIDTH / 2 - camera.x, player.y + player.height / 2 - ECHO_DISP_HEIGHT / 2 - camera.y, 
 			ECHO_DISP_WIDTH, ECHO_DISP_HEIGHT);
-	}
+	}*/
 
-	if(echo.active) {
-		if(echo.freq === ECHO_NORMAL_FREQ) {
-			ctx.strokeStyle = "white";
-		} else if (echo.freq === ECHO_RED_FREQ) {
-			ctx.strokeStyle = "red";
-		} else if(echo.freq === ECHO_BLUE_FREQ) {
-			ctx.strokeStyle = "blue";
-		} else if(echo.freq === ECHO_YELLOW_FREQ) {
-			ctx.strokeStyle = "yellow";
-		}
-
-		ctx.beginPath();
-		ctx.arc(echo.x - camera.x, echo.y - camera.y, echo.radius, 0, Math.PI * 2);
-		ctx.closePath();
-
-		var prevAlpha = ctx.globalAlpha;
-
-		ctx.globalAlpha = echo.timer / ECHO_TIME;
-		ctx.stroke();
-		ctx.globalAlpha = prevAlpha;
-	}
-
+	drawPlayer();
+	drawEcho();
 	drawWaves();
 	drawEnemies();
 	drawRockets();

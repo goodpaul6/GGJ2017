@@ -1,5 +1,8 @@
 "use strict";
 
+const PLAYER_START_AMMO = 30;
+const PLAYER_SHOT_TIME = 0.3;
+
 var player = {
 	x : 100,
 	y : 100,
@@ -14,9 +17,8 @@ var player = {
 	animFrameTime : 1 / 12,
 	flipped : false,
     jumped : false,
-	echoTime: 0,
 	shotTime: 0,
-	shooting: false
+	ammo : PLAYER_START_AMMO
 };
 
 function move(ent, x, y, collideX, collideY) {
@@ -58,7 +60,7 @@ function updatePlayer(dt) {
 		player.dy += 16 * dt;
 	}
 	
-	var doEcho = 32 in keysDown;
+	var doEcho = 32 in keysJustPressed;
 	var left = (37 in keysDown) || (65 in keysDown);
 	var right = (39 in keysDown) || (68 in keysDown);
 	var jump = (38 in keysJustPressed) || (87 in keysJustPressed);
@@ -81,26 +83,11 @@ function updatePlayer(dt) {
     }
 
 	if(doEcho && !echo.active) {
-		player.echoTime += dt;
-
-		if (player.echoTime <= 1) {
-			echo.freq = ECHO_NORMAL_FREQ;
-		} else if (player.echoTime <= 1.5) {
-			echo.freq = ECHO_RED_FREQ;
-		} else if (player.echoTime <= 2.25) {
-			echo.freq = ECHO_BLUE_FREQ;
-		} else { 
-			echo.freq = ECHO_YELLOW_FREQ;
-		}
-	}
-
-	if(player.echoTime > 0 && !doEcho && !echo.active) {
 		echo.active = true;
 		echo.timer = ECHO_TIME;
 		echo.x = player.x + player.width / 2;
 		echo.y = player.y + player.height / 2;
 		dingSound.play();
-		player.echoTime = 0;
 	}
 
 	if (down) {
@@ -129,32 +116,30 @@ function updatePlayer(dt) {
 	if(!player.grounded) {
 		player.anim = PLAYER_ANIM_JUMP;
 	}
-	
-	if(shootRed && !player.shooting) {
-		shootWave(WAVE_SHOT_RED, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
-		player.shotTime = 4;
-		player.shooting = true;
+
+	if(player.ammo > 0) {
+		if(shootRed && player.shotTime <= 0) {
+			shootWave(WAVE_SHOT_RED, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+			player.shotTime = PLAYER_SHOT_TIME;
+			player.ammo -= 1;
+		}
+
+		if(shootBlue && player.shotTime <= 0) {
+			shootWave(WAVE_SHOT_BLUE, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+			player.shotTime = PLAYER_SHOT_TIME;
+			player.ammo -= 1;
+		}
+
+		if(shootYellow && player.shotTime <= 0) {
+			shootWave(WAVE_SHOT_YELLOW, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
+			player.shotTime = PLAYER_SHOT_TIME;
+			player.ammo -= 1;
+		}
 	}
 
-	if(shootBlue && !player.shooting) {
-		shootWave(WAVE_SHOT_BLUE, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
-		player.shotTime = 4;
-		player.shooting = true;
+	if(player.shotTime > 0) {
+		player.shotTime -= dt;
 	}
-
-	if(shootYellow && !player.shooting) {
-		shootWave(WAVE_SHOT_YELLOW, player.x + player.width / 2, player.y + player.height / 2, player.flipped ? -1 : 1);
-		player.shotTime = 4;
-		player.shooting = true;
-	}
-
-	function shotTimer() {
-		if(player.shotTime > 0) {
-			player.shotTime -= 0.2;
-		} else {player.shooting = false;}
-	}
-
-shotTimer();
 
 	move(player, player.dx, player.dy, function() { 
 		player.dx = 0; 
@@ -171,4 +156,16 @@ shotTimer();
 
 		player.animTimer += dt;
 	}
+}
+
+function drawPlayer() {
+	if(playerReady) {
+		drawFrame(playerImage, player.x - camera.x, player.y - camera.y, player.anim[player.frameIndex], PLAYER_FRAME_WIDTH, PLAYER_FRAME_HEIGHT, player.flipped);
+	}
+
+	ctx.fillStyle = "rgb(250, 250, 250)";
+	ctx.font = "20px Helvetica";
+	ctx.textAlign = "left";
+	ctx.textBaseline = "top";
+	ctx.fillText("Ammo: " + player.ammo, 32, 32);
 }

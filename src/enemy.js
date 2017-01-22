@@ -18,7 +18,6 @@ const ENEMY_STATE_SEEN_PLAYER = 1;
 function createEnemy(type, x, y) {
     enemies.push({
         type : type,
-        freq : ECHO_RED_FREQ,
         x : x,
         y : y,
         dx : 0,
@@ -54,7 +53,7 @@ function updateEnemies(dt) {
     for(var i = 0; i < enemies.length; ++i) {
         var enemy = enemies[i];
 
-        if(echo.active && echo.freq == ECHO_NORMAL_FREQ) {
+        if(echo.active) {
             var cx = enemy.x + enemy.width / 2;
             var cy = enemy.y + enemy.height / 2;
 
