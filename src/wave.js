@@ -5,7 +5,7 @@ const WAVE_SHOT_BLUE = 1;
 const WAVE_SHOT_YELLOW = 2;
 
 const WAVE_LIFE = 4;
-const WAVE_SPEED = 400;
+const WAVE_SPEED = 600;
 const WAVE_START_RADIUS = 4;
 const WAVE_RADIUS_SPEED = 12;
 const WAVE_LINE_WIDTH = 2;
@@ -58,26 +58,26 @@ function drawWaves() {
 
         ctx.beginPath();
 
-        /*ctx.moveTo(x, y);
-        for(var i = 0; i < 360; i += 5) {
-            var x = wave.x - camera.x + (i / 360) * 50;
-            var y = wave.y + Math.sin(wave.x + ((i * Math.PI) / 180)) * 5 - camera.y;
+        ctx.moveTo(wave.x - camera.x, wave.y - camera.y);
+        for(var j = 0; j < 360; j += 10) {
+            var x = wave.x - camera.x + (j / 360) * 40;
+            var y = wave.y + Math.sin(wave.x + ((j * Math.PI) / 40)) * 7 - camera.y;
 
             ctx.lineTo(x, y);
             ctx.moveTo(x, y);
-        }*/
+        }
 
-        if(wave.dir < 0) {
+        /*if(wave.dir < 0) {
             ctx.arc(wave.x + wave.radius - camera.x, wave.y - camera.y, wave.radius, Math.PI - Math.PI / 4, Math.PI + Math.PI / 4);
         } else {
             ctx.arc(wave.x - wave.radius - camera.x, wave.y - camera.y, wave.radius, -Math.PI / 4, Math.PI / 4);
-        }
+        }*/
 
         var prevLineWidth = ctx.lineWidth;
 
         ctx.lineWidth = WAVE_LINE_WIDTH;
         ctx.stroke();
-
+        
         ctx.lineWidth = prevLineWidth;
     }
 }
