@@ -150,14 +150,16 @@ function update(dt) {
 	camera.x += (player.x + player.width / 2 - canvas.width / 2 - camera.x) * dt * CAMERA_SPEED_FACTOR;
 	camera.y += (player.y + player.height / 2 - canvas.height / 2 - camera.y) * dt * CAMERA_SPEED_FACTOR;
 
-	updateEnemies(dt);
-	updateRockets(dt);
-	updatePlayer(dt);
-	updateEcho(dt);
-	updateWaves(dt);
-	updateExplosions(dt);
-	updateSpawners(dt);
-	updatePowerups(dt);
+	if(player.health >= 0) {
+		updateEnemies(dt);
+		updateRockets(dt);
+		updatePlayer(dt);
+		updateEcho(dt);
+		updateWaves(dt);
+		updateExplosions(dt);
+		updateSpawners(dt);
+		updatePowerups(dt);
+	}
 }
 
 function drawFrame(image, x, y, frame, fw, fh, flip, scaleX, scaleY) {
@@ -201,6 +203,17 @@ function draw() {
 
 	ctx.fillStyle = "#00001D";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	if(player.health <= 0) {
+		ctx.fillStyle = "rgb(250, 250, 250)";
+		ctx.font = "72px Helvetica";
+		ctx.textAlign = "middle";
+		ctx.textBaseline = "middle";
+
+		ctx.fillText("GAME OVER!", canvas.width / 2 - 300, canvas.height / 2);
+
+		return;
+	}
 
 	if(groundReady) {
 		var left = Math.floor(camera.x / level.tilewidth);
