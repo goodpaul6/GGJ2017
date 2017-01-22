@@ -14,7 +14,23 @@ enemyImage.onload = function() {
     enemyReady = true;
 }
 
-enemyImage.src = "graphics/monster.png";
+enemyImage.src = "graphics/monster1.png";
+
+const ENEMY_FRAME_WIDTH = 128;
+const ENEMY_FRAME_HEIGHT = 128;
+
+const ENEMY_ANIM_IDLE = [5];
+const ENEMY_ANIM_MOVE = [0,1,2];
+const ENEMY_ANIM_STOP = [3,4];
+
+var explosionReady = false;
+var explosionImage = new Image();
+
+explosionImage.onload = function() {
+    explosionReady = true;
+}
+
+explosionImage.src = "graphics/explosion.png";
 
 var rocketReady = false;
 var rocketImage = new Image();
