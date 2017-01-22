@@ -141,24 +141,24 @@ function updatePlayer(dt) {
 	if(shootRed && player.shotTime <= 0) {
 		shootWave(WAVE_SHOT_RED, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
-		shakeMag = 2;
-		shakeTimer = 0.05;
+		shakeMag = 10;
+		shakeTimer = 0.1;
 		redSound.play();
 	}
 
 	if(shootBlue && player.shotTime <= 0) {
 		shootWave(WAVE_SHOT_BLUE, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
-		shakeMag = 2;
-		shakeTimer = 0.05;
+		shakeMag = 10;
+		shakeTimer = 0.1;
 		blueSound.play();
 	}
 
 	if(shootYellow && player.shotTime <= 0) {
 		shootWave(WAVE_SHOT_YELLOW, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
-		shakeMag = 2;
-		shakeTimer = 0.05;
+		shakeMag = 10;
+		shakeTimer = 0.1;
 		yellowSound.play();
 	}
 
@@ -178,7 +178,7 @@ function updatePlayer(dt) {
 		echo.y = player.y + player.height / 2;
 		player.ammo -= 1;
 
-		shakeMag = 5;
+		shakeMag = 20;
 		shakeTimer = 0.2;
 	}
 
