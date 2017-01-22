@@ -142,7 +142,7 @@ function updatePlayer(dt) {
 		shootWave(WAVE_SHOT_RED, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
 		shakeMag = 10;
-		shakeTimer = 0.1;
+		shakeTimer = 0.15;
 		redSound.play();
 	}
 
@@ -150,7 +150,7 @@ function updatePlayer(dt) {
 		shootWave(WAVE_SHOT_BLUE, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
 		shakeMag = 10;
-		shakeTimer = 0.1;
+		shakeTimer = 0.15;
 		blueSound.play();
 	}
 
@@ -158,7 +158,7 @@ function updatePlayer(dt) {
 		shootWave(WAVE_SHOT_YELLOW, player.x + offX, player.y + offY, player.flipped ? -1 : 1);
 		player.shotTime = PLAYER_SHOT_TIME;
 		shakeMag = 10;
-		shakeTimer = 0.1;
+		shakeTimer = 0.15;
 		yellowSound.play();
 	}
 
@@ -179,7 +179,7 @@ function updatePlayer(dt) {
 		player.ammo -= 1;
 
 		shakeMag = 20;
-		shakeTimer = 0.2;
+		shakeTimer = 0.3;
 	}
 
 	move(player, player.dx, player.dy, function() { 
@@ -222,4 +222,5 @@ function drawPlayer() {
 
 	ctx.fillText("Wave: " + spawnLevel, 0, heartImage.height + 10 + ammoImage.height + 30);
 	ctx.fillText("Enemies: " + enemies.length, 0, heartImage.height + 10 + ammoImage.height + 60);
+	ctx.fillText("Enemies Killed: " + enemiesKilled, 0, heartImage.height + 10 + ammoImage.height + 90);
 }
