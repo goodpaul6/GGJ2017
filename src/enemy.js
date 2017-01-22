@@ -15,6 +15,8 @@ const ENEMY_ROCKET_ACCEL_SPEED = 4;
 const ENEMY_STATE_NONE = 0;
 const ENEMY_STATE_SEEN_PLAYER = 1;
 
+const ENEMY_START_HEALTH = 3;
+
 function createEnemy(type, x, y) {
     enemies.push({
         type : type,
@@ -33,7 +35,8 @@ function createEnemy(type, x, y) {
         frames : ENEMY_ANIM_IDLE,
         loop : true,
         animTimer : 0,
-        frameTime : 0
+        frameTime : 0,
+        health : ENEMY_START_HEALTH
     });
 }
 
@@ -147,8 +150,12 @@ function updateEnemies(dt) {
         }
 
         if(enemy.hit) {
-            addExplosion(enemy.x, enemy.y);
-            enemies.splice(i, 1);
+            enemy.health -= 1;
+            if(enemy.health <= 0) {
+                addExplosion(enemy.x, enemy.y);
+                enemies.splice(i, 1);
+            }
+            enemy.hit = false;
         }
         
         if(enemy.frames) {
