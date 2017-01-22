@@ -86,17 +86,6 @@ function updatePlayer(dt) {
 	var shootBlue = (88 in keysDown) || (75 in keysDown);
 	var shootYellow = (67 in keysDown) || (76 in keysDown);
 
-	/*if (jump) {
-		player.dy = -10;
-		player.grounded = false;
-		player.jumped = true;
-	} else if(!up) {
-        if(!player.grounded && player.jumped) {
-            if(player.dy < 0) {
-                player.dy = 0;
-            }
-        }
-}*/
 	if(jump && player.grounded) {
 		player.grounded = false;
 		player.dy = -4;
@@ -175,6 +164,9 @@ function updatePlayer(dt) {
 		player.shotTime -= dt;
 	}
 
+	if(player.health <= 0){
+		window.alert("Game Over!");
+	}
 	if(Math.abs(player.dy) >= PLAYER_TERMINAL_VEL * dt) {
 		player.dy = Math.sign(player.dy) * PLAYER_TERMINAL_VEL * dt;
 	}
