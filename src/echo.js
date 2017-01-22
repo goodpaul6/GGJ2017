@@ -31,9 +31,14 @@ function drawEcho() {
 		ctx.closePath();
 
 		var prevAlpha = ctx.globalAlpha;
+		var prevWidth = ctx.lineWidth;
+
+		ctx.lineWidth = 4;
 
 		ctx.globalAlpha = echo.timer / ECHO_TIME + 0.05;
 		ctx.stroke();
 		ctx.globalAlpha = prevAlpha;
+
+		ctx.lineWidth = prevWidth;
 	}
 }

@@ -35,7 +35,7 @@ function updateSpawners(dt) {
         if(spawner.timer <= 0) {
             --spawnCount;
             if(spawnCount == 0) {
-                spawnWait = 10;
+                spawnWait = 20;
                 break;
             }
 
