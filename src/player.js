@@ -33,11 +33,8 @@ var player = {
 	shotTime: 0,
 	ammo : PLAYER_START_AMMO,
 	health: PLAYER_START_HEALTH,
-<<<<<<< HEAD
-	loop : false
-=======
+	loop : false,
 	jetFuel : PLAYER_JET_FUEL,
->>>>>>> fd2b3f4ecb36d1024128e869c17b0fe45bac33e7
 };
 
 function move(ent, x, y, collideX, collideY) {
