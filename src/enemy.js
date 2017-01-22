@@ -99,7 +99,7 @@ function updateEnemies(dt) {
                     if(canShoot && dist2 < ENEMY_ROCKET_CHASE_RADIUS * ENEMY_ROCKET_CHASE_RADIUS) {
                         if(enemy.shootTimer <= 0) {
                             enemy.shootTimer = ENEMY_ROCKET_SHOOT_COOLDOWN;
-                            shootRocket(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, angle);
+                            shootRocket(enemy.x + enemy.width / 2 - ROCKET_WIDTH / 2, enemy.y + enemy.height / 2 - ROCKET_HEIGHT / 2, angle);
                         }
 
                         if(enemy.anim != ENEMY_ANIM_STOP) {

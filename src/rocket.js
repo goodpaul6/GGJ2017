@@ -33,7 +33,7 @@ function updateRockets(dt) {
             player.health -= 1;
         });
 
-        if(collideLevelCircle(rocket.x + rocketImage.width / 2, rocket.y + rocketImage.height / 2, ROCKET_SIZE / 2)) {
+        if(collideLevel(rocket.x, rocket.y, ROCKET_WIDTH, ROCKET_HEIGHT)) {
             addExplosion(rocket.x - EXPLOSION_FRAME_WIDTH / 2, rocket.y - EXPLOSION_FRAME_HEIGHT / 2);
             rockets.splice(i, 1);
         }
