@@ -126,13 +126,17 @@ function updateEnemies(dt) {
                             dy = ENEMY_ROCKET_ACCEL_SPEED * dt;
                         }
 
-                        if(collideLevel(enemy.x, enemy.y + enemy.dy, enemy.width, enemy.height)) {
+                        if(collideLevel(enemy.x, enemy.y + Math.sign(dy) * 5, enemy.width, enemy.height)) {
                             dx = -enemy.dir * ENEMY_ROCKET_ACCEL_SPEED * dt;
                         }
 
                         enemy.loop = false;
+                        if(enemy.frames != ENEMY_ANIM_MOVE) {
+                            enemy.animTimer = 0;
+                        }
+
                         enemy.frames = ENEMY_ANIM_MOVE;
-                        enemy.frameTime = 1 / 2;
+                        enemy.frameTime = 1 / 3;
 
                         enemy.dx += dx;
                         enemy.dy += dy;

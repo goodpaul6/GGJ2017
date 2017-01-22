@@ -162,9 +162,11 @@ function drawFrame(image, x, y, frame, fw, fh, flip, scaleX, scaleY) {
 }
 
 function drawStars() {
-	for(var y = 0; y < 20; ++y) {
-		for(var x = 0; x < 20; ++x) {
-			ctx.drawImage(starImage, x * 32, y * 32);	
+	for(var y = Math.floor(camera.y / 32); y < Math.floor((camera.y + canvas.height) / 32); ++y) {
+		for(var x = Math.floor(camera.x / 32); x < Math.floor((camera.x + canvas.width) / 32); ++x) {
+			if(Math.random() > 0.9) {
+				ctx.drawImage(starImage, x * 32, y * 32);
+			}
 		}
 	}
 }
@@ -177,6 +179,8 @@ function draw() {
 
 	ctx.fillStyle = "#00001D";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	drawStars();
 
 	var layer = level.layers[0];
 

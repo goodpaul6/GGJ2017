@@ -21,7 +21,8 @@ function shootWave(shot, x, y, dir) {
         y : y,
         timer : WAVE_LIFE,
         length : 0,
-        dir : dir
+        dir : dir,
+        done : false
     });
 }
 
@@ -29,20 +30,26 @@ function updateWaves(dt) {
     for(var i = 0; i < waves.length; ++i) {
         var wave = waves[i];
     
-        if(collideLevel(wave.x, wave.y - WAVE_AMPLITUDE / 2, wave.length, WAVE_AMPLITUDE)) {
-            waves.splice(i, 1);
+        if(wave.length >= WAVE_MAX_LENGTH) {
+            wave.done = true;
         }
 
-        if(Math.abs(wave.length) < WAVE_MAX_LENGTH) {
+        if(collideLevel(wave.x, wave.y - WAVE_AMPLITUDE / 2, wave.length, WAVE_AMPLITUDE)) {
+            wave.done = true;
+        }
+
+        if(!wave.done) {
             if(wave.dir > 0) {
                 collideEnemy(wave.x, wave.y - WAVE_AMPLITUDE / 2, wave.length, WAVE_AMPLITUDE, function(e) {
                     e.hit = true;
-                    waves.splice(i, 1);
+                    wave.done = true;
+                    wave.length -= wave.dir * e.width;
                 });
             } else {
                 collideEnemy(wave.x + wave.length, wave.y - WAVE_AMPLITUDE / 2, -wave.length, WAVE_AMPLITUDE, function(e) {
                     e.hit = true;
-                    waves.splice(i, 1);
+                    wave.done = true;
+                    wave.length -= wave.dir * e.width;
                 });
             }
             

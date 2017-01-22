@@ -95,4 +95,4 @@ starImage.onload = function() {
     starReady = false;
 }
 
-startImage.src = "graphics/star.png";
+starImage.src = "graphics/star.png";
