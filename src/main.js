@@ -91,6 +91,7 @@ function init() {
 	canvas.style["top"] = "50%";
 	canvas.style["left"] = "50%";
 	canvas.style["transform"] = "translate(-50%, -50%)";
+	canvas.style["border"] = "solid";
 	
 	ctx = canvas.getContext("2d");
 
@@ -226,6 +227,8 @@ function draw() {
 		ctx.textBaseline = "middle";
 
 		ctx.fillText("GAME OVER! PRESS CTRL+R TO RESTART.", canvas.width / 2, canvas.height / 2 + 200);
+		ctx.fillText("YOU GOT TO WAVE " + spawnLevel, canvas.width / 2, canvas.height / 2 + 240);
+
 		ctx.drawImage(titleImage, canvas.width / 2 - titleImage.width / 2, canvas.height / 2 - titleImage.height / 2);		
 
 		return;
