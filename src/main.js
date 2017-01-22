@@ -222,10 +222,12 @@ function draw() {
 	if(player.health <= 0) {
 		ctx.fillStyle = "rgb(250, 250, 250)";
 		ctx.font = "72px Helvetica";
-		ctx.textAlign = "middle";
+		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 
-		ctx.fillText("GAME OVER!", canvas.width / 2 - 300, canvas.height / 2);
+		ctx.fillText("GAME OVER!", canvas.width / 2, canvas.height / 2 + titleImage.height);
+
+		titleTimer = 1;
 
 		return;
 	}

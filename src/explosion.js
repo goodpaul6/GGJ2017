@@ -7,6 +7,8 @@ function addExplosion(x, y) {
         frame : 0,
         timer : 0
     });
+
+    playExplosion();
 }
 
 function updateExplosions(dt) {
