@@ -7,17 +7,11 @@ ost.addEventListener("ended", function() {
     this.play();
 }, false);
 
-var explosionSound = document.getElementById("explosion");
-var explosionSound2 = explosionSound.clone();
+var explosionSound = document.getElementById("explode");
 
 function playExplosion() {
-    if(!explosionSound.paused) {
-        explosionSound2.currentTime = 0;
-        explosionSound2.play();
-    } else {
-        explosionSound.currentTime = 0;
-        explosionSound.play();
-    }
+    explosionSound.currentTime = 0;
+    explosionSound.play();
 }
 
 var redSound = document.getElementById("red");
