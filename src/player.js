@@ -177,6 +177,7 @@ function updatePlayer(dt) {
 		echo.x = player.x + player.width / 2;
 		echo.y = player.y + player.height / 2;
 		player.ammo -= 1;
+		dingSound.play();
 
 		shakeMag = 20;
 		shakeTimer = 0.3;
